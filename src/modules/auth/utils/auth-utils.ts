@@ -20,10 +20,7 @@ async function getAuth() {
         return cachedAuth;
     }
 
-    const { env: cloudflareEnv } = await getCloudflareContext();
-    // cloudflare context env has a generated type; cast to any so we can
-    // read custom env vars like BETTER_AUTH_TRUSTED_ORIGINS without TypeScript errors
-    const env = cloudflareEnv as any;
+    const { env } = await getCloudflareContext();
     const db = await getDb();
 
     cachedAuth = betterAuth({
@@ -31,20 +28,13 @@ async function getAuth() {
         database: drizzleAdapter(db, {
             provider: "sqlite",
         }),
-        // Trusted origins for OAuth callbacks and CORS-sensitive flows.
-        // Accept a comma-separated list via BETTER_AUTH_TRUSTED_ORIGINS or
-        // fallback to common local dev origins (3000 for Next, 8787 for wrangler dev).
-        trustedOrigins: (env.BETTER_AUTH_TRUSTED_ORIGINS
-            ? String(env.BETTER_AUTH_TRUSTED_ORIGINS).split(",").map((s) => s.trim())
-            : [env.BETTER_AUTH_URL ?? "http://localhost:3000", "http://localhost:8787"]
-        ).filter(Boolean),
         emailAndPassword: {
             enabled: true,
         },
         socialProviders: {
             google: {
                 enabled: true,
-                clientId: env.GOOGLE_CLIENT_ID!,
+                clientId: env.GOOGLE_CLIENT_ID! as string,
                 clientSecret: env.GOOGLE_CLIENT_SECRET!,
             },
         },

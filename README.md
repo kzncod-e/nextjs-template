@@ -337,14 +337,14 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 CLOUDFLARE_R2_URL=https://pub-a1b2c3d4e5f6g7h8i9j0.r2.dev
 ```
 
-**Set Production Secrets:**
-```bash
-# Add each secret to Cloudflare Workers
-echo "your-secret-here" | wrangler secret put BETTER_AUTH_SECRET
-echo "your-client-id" | wrangler secret put GOOGLE_CLIENT_ID
-echo "your-client-secret" | wrangler secret put GOOGLE_CLIENT_SECRET
-echo "your-r2-url" | wrangler secret put CLOUDFLARE_R2_URL
-```
+  **Set Production Secrets:**
+  ```bash
+  # Add each secret to Cloudflare Workers
+  echo "your-secret-here" | wrangler secret put BETTER_AUTH_SECRET
+  echo "your-client-id" | wrangler secret put GOOGLE_CLIENT_ID
+  echo "your-client-secret" | wrangler secret put GOOGLE_CLIENT_SECRET
+  echo "your-r2-url" | wrangler secret put CLOUDFLARE_R2_URL
+  ```
 
 ### Step 5: Database Setup
 
