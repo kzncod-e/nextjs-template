@@ -13,7 +13,10 @@ declare namespace Cloudflare {
 		ASSETS: Fetcher;
 	}
 }
-interface CloudflareEnv extends Cloudflare.Env {}
+interface CloudflareEnv extends Cloudflare.Env {
+    GOOGLE_CLIENT_SECRET: any;
+    GOOGLE_CLIENT_ID: string;
+}
 
 // Begin runtime types
 /*! *****************************************************************************

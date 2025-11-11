@@ -20,6 +20,7 @@ async function getAuth() {
         return cachedAuth;
     }
 
+
     const { env } = await getCloudflareContext();
     const db = await getDb();
 
