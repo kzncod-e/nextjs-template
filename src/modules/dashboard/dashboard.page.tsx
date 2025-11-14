@@ -113,15 +113,19 @@ export default function DashboardPage() {
             .map((post, i) => (
               <div key={i} className="rounded-lg border border-gray-200 bg-white p-4">
                 <h2 className="text-lg font-semibold mb-2">📝 Posted Content</h2>
-                <p className="font-medium">{post.post.title}</p>
-                <p className="text-gray-600 text-sm">{post.post.caption}</p>
-                <a
-                  href={post.post.link}
-                  target="_blank"
-                  className="text-blue-600 hover:underline text-sm"
-                >
-                  View Post
-                </a>
+                {post.post && (
+                  <>
+                    <p className="font-medium">{post.post.title}</p>
+                    <p className="text-gray-600 text-sm">{post.post.caption}</p>
+                    <a
+                      href={post.post.link}
+                      target="_blank"
+                      className="text-blue-600 hover:underline text-sm"
+                    >
+                      View Post
+                    </a>
+                  </>
+                )}
               </div>
             ))}
 
