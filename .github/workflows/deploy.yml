@@ -129,7 +129,7 @@ jobs:
         run: pnpm install --no-frozen-lockfile
 
       - name: Build application
-        run: pnpm run build:cf -- --skipWranglerConfigCheck --skipDev
+        run: pnpm run dev:cf
         env:
           WRANGLER_DEV: local
           WRANGLER_REMOTE: false
