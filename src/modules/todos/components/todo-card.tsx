@@ -52,6 +52,7 @@ export function TodoCard({ todo }: TodoCardProps) {
 
     const isOverdue =
         todo.dueDate && new Date(todo.dueDate) < new Date() && !todo.completed;
+console.log(todo.imageUrl,"ini image url ");
 
     return (
         <Card

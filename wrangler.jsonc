@@ -30,6 +30,12 @@
 			"binding": "next_cf_app_2",
 			"database_name": "next-cf-app",
 			"database_id": "c296275f-769c-4955-bd23-982d8285b3d7"
+		},
+		{
+			"binding": "next_cf_app_preview",
+			"database_name": "next-cf-app-preview",
+			"database_id": "ff804157-4e8a-4b9f-9bbc-12f26f05ef80",
+			"remote": true
 		}
 	],
 	"r2_buckets": [
@@ -40,7 +46,15 @@
 		},
 		{
 			"bucket_name": "next-cf-app-bucket",
-			"binding": "next_cf_app_bucket_unique_1"
+			"binding": "next_cf_app_bucket_unique_1",
+			"preview_bucket_name": "next-cf-app-dev-bucket"
+		},
+		{
+			"bucket_name": "next-cf-app-dev-bucket",
+			"binding": "next_cf_app_dev_bucket",
+			"preview_bucket_name": "next-cf-app-dev-bucket",
+
+			"remote": true
 		}
 	],
 	// we dont have one

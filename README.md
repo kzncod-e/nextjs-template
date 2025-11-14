@@ -506,7 +506,7 @@ pnpm run dev:remote
 ```
 
 ## 📜 Available Scripts
-
+X
 ### **Core Development**
 | Script | Description |
 |--------|-------------|
