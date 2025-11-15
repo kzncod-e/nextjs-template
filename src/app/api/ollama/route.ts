@@ -6,12 +6,12 @@ export async function POST(req: Request) {
 
 		const result = await client.predict("/run_with_stream", {
 			agent_type: "custom",
-			llm_provider: "ollama",
-			llm_model_name: "qwen2.5:7b",
+			llm_provider: "google",
+			llm_model_name: "gemini-2.0-flash",
 			llm_num_ctx: 32000,
 			llm_temperature: 0.6,
-			llm_base_url: "https://ollama2.tuselak.com",
-			llm_api_key: "",
+			llm_base_url: "",
+			llm_api_key: "AIzaSyAaFhimvoHmEE2b6M1Kzl8iVD6tN6hzma8",
 			use_own_browser: true,
 			keep_browser_open: false,
 			headless: false,

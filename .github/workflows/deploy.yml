@@ -47,7 +47,6 @@ jobs:
 
       - name: Build application
         run: pnpm run preview:cf
-
         env:
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
@@ -130,10 +129,8 @@ jobs:
         run: pnpm install --no-frozen-lockfile
 
       - name: Build application
-        run:  pnpm build:cf
+        run: pnpm run build:cf
         env:
-          WRANGLER_DEV: local
-          WRANGLER_REMOTE: false
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}

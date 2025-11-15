@@ -7,4 +7,3 @@ export {
 export { categories } from "@/modules/todos/schemas/category.schema";
 export { todos } from "@/modules/todos/schemas/todo.schema";
 export { post } from "@/modules/post/schemas/post.schema";
-export {activities,posts,likedPosts,commentedPosts,videos,viewedPosts,savedPosts,followedAccounts,sessions,} from "@/modules/agent/agent.schema";
