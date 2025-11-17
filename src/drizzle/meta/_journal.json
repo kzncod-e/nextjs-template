@@ -29,6 +29,13 @@
       "when": 1763144529508,
       "tag": "0003_drop_agen_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1763393818078,
+      "tag": "0004_add_agentActivity_table",
+      "breakpoints": true
     }
   ]
 }

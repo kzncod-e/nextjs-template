@@ -18,6 +18,11 @@ const items = [
     url: "#",
     icon: Home,
   },
+  {
+    title: "agent Activities",
+    url: "/agent",
+    icon: Home,
+  },
 ];
 
 export function AppSidebar() {

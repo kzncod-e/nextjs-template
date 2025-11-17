@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { dummyData, selectData } from "./data";
-import axios from "axios";
 
+import axios from "axios";
 import {
   Select,
   SelectContent,
@@ -13,16 +12,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import AgentActivity from "./components/agent-activity";
+
 import { Label } from "@/components/ui/label";
 import DashboardLoader from "../todos/components/loader";
+import { useAgentStore } from "@/store/agent.store";
+import AgentListPage from "./components/agent-activity";
+import { selectData } from "./data";
 export default function DashboardPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [platform, setPlatform] = useState("instagram");
-  const [instance, setInstance] = useState("instance 1");
+  const [instance, setInstance] = useState("");
 
   const [error, setError] = useState<string | null>(null);
+  const { setAgentData, agentData } = useAgentStore.getState();
   const [selectedStep, setselectedStep] = useState<{
     [key: number]: string;
   }>({});
@@ -32,40 +35,78 @@ export default function DashboardPage() {
       [index]: value,
     }));
   };
+  const extractFinalJson = (stream) => {
+    if (!Array.isArray(stream)) return null;
 
-  const getAi = async () => {
+    // Cari item yang isinya python-like object
+    const found = stream.find(
+      (item) =>
+        typeof item === "string" &&
+        item.includes("{'done':") &&
+        item.includes("text")
+    );
+
+    if (!found) return null;
+
+    const safe = found
+      .replace(/'/g, '"') // single → double quote
+      .replace(/\bFalse\b/g, "false")
+      .replace(/\bTrue\b/g, "true")
+      .replace(/\bNone\b/g, "null");
+
+    let layer1;
     try {
-      console.log("🚀 Starting Ollama API call...");
-      setLoading(true);
-      setError(null);
-
-      console.log("📡 Sending POST request to /api/ollama");
-      const res = await axios.post("/api/agent", {
-        selectedStep,
-        instance,
-        platform,
-      });
-
-      console.log("✅ Response received:", res);
-      console.log("Response data:", res.data);
-
-      if (res.data.success) {
-        setData(res.data.data);
-        console.log("✨ Ollama result stored in state:", res.data.data);
-      } else {
-        setError(res.data.error || "Failed to fetch ollama data");
-        console.warn("⚠️ API returned error:", res.data.error);
-      }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error occurred";
-      setError(errorMessage);
-
-      console.error("Error message:", errorMessage);
-    } finally {
-      setLoading(false);
-      console.log("✅ Loading complete");
+      layer1 = JSON.parse(safe);
+    } catch (e) {
+      console.log("❌ Error parsing layer 1:", e);
+      return null;
     }
+
+    const text = layer1?.[0]?.done?.text;
+    if (!text) return null;
+
+    // Parse final JSON
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      console.log("❌ Error parsing final JSON:", e);
+      return null;
+    }
+  };
+
+  const getAi = () => {
+    setLoading(true);
+    setError(null);
+
+    axios
+      .post("/api/agent/activity", { selectedStep, instance, platform })
+      .then((res) => {
+        const stream = res.data?.data?.data;
+
+        if (!stream) {
+          setError("Invalid agent response");
+          return;
+        }
+
+        console.log("📌 Stream Data", stream);
+
+        const json = extractFinalJson(stream);
+
+        if (!json) {
+          setError("Failed to parse final JSON");
+          return;
+        }
+
+        console.log("🔥 FINAL JSON:", json);
+
+        setAgentData(json);
+        setData(json);
+      })
+      .catch((err) => {
+        setError(err.message);
+        console.log("❌ Error:", err);
+      })
+      .finally(() => setLoading(false));
   };
 
   const handlegetAiActivity = async () => {
@@ -78,7 +119,9 @@ export default function DashboardPage() {
   // useEffect(() => {
   //   console.log(selectedStep);
   // }, [selectedStep]);
-
+  useEffect(() => {
+    console.log(agentData, "ini agent data");
+  }, [agentData]);
   return (
     <div className="min-h-screen bg-white text-gray-900 p-8">
       <div className="max-w-5xl mx-auto space-y-8">
@@ -87,8 +130,8 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="flex flex-col items-center justify-between">
           <h1 className="text-2xl  my-6 font-bold">Ai Prompt</h1>
-          <div className="w-full bg-slate-100 p-10 rounded-2xl">
-            <form action="" className="w-fit p-6 bg-white">
+          <div className="w-full bg-slate-100 flex flex-col items-center justify-center p-10 rounded-2xl">
+            <form action="" className="w-fit p-6 flex flex-col bg-white">
               <Select onValueChange={(value) => setPlatform(value)}>
                 <Label className="mt-2  mb-2 font-sans text-black/40">
                   Select your Platform
@@ -179,42 +222,22 @@ export default function DashboardPage() {
                 </Select>
               ))}
             </form>
+            <div className="flex w-full mt-7 justify-end">
+              <button
+                disabled={loading ? true : false}
+                onClick={handlegetAiActivity}
+                className="rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 px-4 py-2 text-sm font-medium"
+              >
+                Run the agent
+              </button>
+            </div>
           </div>
           {/* <h1 className="text-2xl font-semibold tracking-tight">
             AI Agent Overview
           </h1> */}
-          <div className="flex w-full mt-7 justify-end">
-            <button
-              disabled={loading ? true : false}
-              onClick={handlegetAiActivity}
-              className="rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 px-4 py-2 text-sm font-medium"
-            >
-              Run the agent
-            </button>
-          </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4">
-          <div className="rounded-lg border border-gray-200 bg-white p-4">
-            <p className="text-sm text-gray-500">Agent Session</p>
-            <p className="text-base font-medium">{dummyData.sessionId}</p>
-          </div>
-          <div className="rounded-lg border border-gray-200 bg-white p-4">
-            <p className="text-sm text-gray-500">Platform</p>
-            <p className="text-base font-medium">{dummyData.platform}</p>
-          </div>
-          <div className="rounded-lg border border-gray-200 bg-white p-4">
-            <p className="text-sm text-gray-500">Status</p>
-            <p className="text-base font-medium text-green-600 capitalize">
-              {dummyData.status}
-            </p>
-          </div>
-        </div>
-        {loading ? (
-          <DashboardLoader />
-        ) : (
-          <AgentActivity dummyData={dummyData} />
-        )}
+        {loading ? <DashboardLoader /> : <AgentListPage />}
       </div>
     </div>
   );

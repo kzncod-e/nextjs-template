@@ -362,7 +362,7 @@ pnpm run db:generate
 # Apply migrations to local database
 pnpm run db:migrate:local
 
-# Verify database structure
+# Verify database structure         p p
 pnpm run db:inspect:local
 ```
 
