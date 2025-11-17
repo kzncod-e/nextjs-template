@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { agentFullDummy } from "../../../../modules/dashboard/data";
+import { agentFullDummy } from "@/modules/dashboard/data";
 
 export default function AgentDetailPage() {
   const params = useParams<{ id: string }>();

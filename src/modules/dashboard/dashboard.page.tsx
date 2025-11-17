@@ -23,7 +23,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(false);
   const [platform, setPlatform] = useState("instagram");
   const [instance, setInstance] = useState("");
-
+  const [agent, setAgent] = useState("google");
   const [error, setError] = useState<string | null>(null);
   const { setAgentData, agentData } = useAgentStore.getState();
   const [selectedStep, setselectedStep] = useState<{
@@ -35,45 +35,12 @@ export default function DashboardPage() {
       [index]: value,
     }));
   };
-  const extractFinalJson = (stream) => {
-    if (!Array.isArray(stream)) return null;
-
-    // Cari item yang isinya python-like object
-    const found = stream.find(
-      (item) =>
-        typeof item === "string" &&
-        item.includes("{'done':") &&
-        item.includes("text")
-    );
-
-    if (!found) return null;
-
-    const safe = found
-      .replace(/'/g, '"') // single → double quote
-      .replace(/\bFalse\b/g, "false")
-      .replace(/\bTrue\b/g, "true")
-      .replace(/\bNone\b/g, "null");
-
-    let layer1;
-    try {
-      layer1 = JSON.parse(safe);
-    } catch (e) {
-      console.log("❌ Error parsing layer 1:", e);
-      return null;
-    }
-
-    const text = layer1?.[0]?.done?.text;
-    if (!text) return null;
-
-    // Parse final JSON
-    try {
-      return JSON.parse(text);
-    } catch (e) {
-      console.log("❌ Error parsing final JSON:", e);
-      return null;
-    }
-  };
-
+  function fixPythonList(str: string) {
+    return str
+      .replace(/None/g, "null") // ubah None → null
+      .replace(/'/g, '"'); // ubah ' → "
+  }
+  const agentsData = ["ollama", "moonshot", "google"];
   const getAi = () => {
     setLoading(true);
     setError(null);
@@ -89,18 +56,16 @@ export default function DashboardPage() {
         }
 
         console.log("📌 Stream Data", stream);
+        let parsedData;
+        let mainData = stream[1];
+        let subData = fixPythonList(stream[2]);
+        console.log(subData);
 
-        const json = extractFinalJson(stream);
+        parsedData = JSON.parse(subData);
 
-        if (!json) {
-          setError("Failed to parse final JSON");
-          return;
+        if (stream[1] !== null) {
+          setData(parsedData);
         }
-
-        console.log("🔥 FINAL JSON:", json);
-
-        setAgentData(json);
-        setData(json);
       })
       .catch((err) => {
         setError(err.message);
@@ -120,8 +85,8 @@ export default function DashboardPage() {
   //   console.log(selectedStep);
   // }, [selectedStep]);
   useEffect(() => {
-    console.log(agentData, "ini agent data");
-  }, [agentData]);
+    console.log(data, "ini data");
+  }, [data]);
   return (
     <div className="min-h-screen bg-white text-gray-900 p-8">
       <div className="max-w-5xl mx-auto space-y-8">
@@ -176,6 +141,24 @@ export default function DashboardPage() {
                     <SelectItem value="http://103.215.228.166:7813">
                       Instance 5
                     </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <Select onValueChange={(value) => setAgent(value)}>
+                <Label className="mt-2  mb-2 font-sans text-black/40">
+                  Select The agent provider
+                </Label>
+                <SelectTrigger className="w-[40rem]">
+                  <SelectValue placeholder={agent} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>agents</SelectLabel>
+                    {agentsData.map((el, index) => (
+                      <SelectItem key={index} value={el}>
+                        {el}
+                      </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>

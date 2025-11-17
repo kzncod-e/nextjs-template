@@ -1,85 +1,99 @@
-"use client";
-
-import { motion } from "framer-motion";
-import Link from "next/link";
-
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle, XCircle, Activity, Sparkles } from "lucide-react";
 import { agentFullDummy } from "../data";
 
-export default function AgentListPage() {
+// Enhanced UI version
+export default function AgentOverview({ onConfirm, onCancel }) {
+  const { agent, activity, summary } = agentFullDummy[0];
+
+  const statusColor =
+    agent.status === "success" ? "text-green-600" : "text-red-600";
+  const StatusIcon = agent.status === "success" ? CheckCircle : XCircle;
+
   return (
-    <motion.div
-      className="p-8 max-w-5xl mx-auto space-y-10"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
-    >
-      <h1 className="text-4xl font-bold">Agent Activity Overview</h1>
+    <div className="w-full flex justify-center mt-10 animate-fadeIn">
+      <Card className="w-[42rem] shadow-2xl p-6 rounded-3xl border border-gray-200 bg-white/90 backdrop-blur-md">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-3xl font-bold flex items-center gap-2">
+            <Sparkles className="h-6 w-6 text-yellow-500" />
+            Agent Activity Overview
+          </CardTitle>
+          <p className="text-sm text-gray-500 mt-1">
+            Review the result of the agent run before saving.
+          </p>
+        </CardHeader>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        {agentFullDummy.map((item, index) => {
-          const { agent, activity, summary } = item;
+        <CardContent className="space-y-8">
+          {/* Agent Info */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Activity className="h-5 w-5 text-blue-600" /> Agent Info
+            </h3>
+            <div className="text-sm text-gray-700 bg-gray-50 p-4 rounded-xl border">
+              <div className="flex justify-between items-center mb-2">
+                <p className="font-medium text-gray-800 text-lg">
+                  {agent?.name}
+                </p>
+                <Badge className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-md capitalize">
+                  {agent.platform}
+                </Badge>
+              </div>
+              <div className="flex items-center gap-2">
+                <StatusIcon className={`h-5 w-5 ${statusColor}`} />
+                <span className={`font-semibold ${statusColor} capitalize`}>
+                  {agent?.status}
+                </span>
+              </div>
+            </div>
+          </div>
 
-          return (
-            <motion.div
-              key={agent.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
+          {/* Activity */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">Activity</h3>
+            <div className="text-sm bg-gray-50 p-4 rounded-xl border text-gray-700">
+              <p className="mb-1">
+                <strong>Title:</strong> {activity?.title}
+              </p>
+              <p>
+                <strong>Description:</strong> {activity?.description || "-"}
+              </p>
+            </div>
+          </div>
+
+          {/* Summary */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">Summary</h3>
+            <div className="text-sm bg-gray-50 p-4 rounded-xl border text-gray-700">
+              <p className="mb-1">
+                <strong>Success Rate:</strong> {summary?.successRate}
+              </p>
+              <p>
+                <strong>Notes:</strong> {summary?.notes || "-"}
+              </p>
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex justify-end gap-4 pt-4">
+            <Button
+              variant="outline"
+              onClick={onCancel}
+              className="px-6 py-2 rounded-xl"
             >
-              <Link href={`/dashboard/agent/${agent.id}`}>
-                <Card className="border shadow-md hover:shadow-xl transition rounded-xl cursor-pointer">
-                  <CardHeader>
-                    <CardTitle className="flex justify-between">
-                      <span>{agent.name}</span>
-                      {/* <span
-                        className={`px-3 py-1 text-sm rounded-full ${
-                          agent.status === "running"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
-                      >
-                        {agent.status}
-                      </span> */}
-                    </CardTitle>
-                  </CardHeader>
-
-                  <CardContent className="space-y-4">
-                    {/* Agent Info */}
-                    <div className="text-sm text-gray-600 space-y-1">
-                      <p>
-                        <strong>Platform:</strong> {agent.platform}
-                      </p>
-                      <p>
-                        <strong>Created:</strong>{" "}
-                        {new Date(agent.createdAt).toLocaleString()}
-                      </p>
-                    </div>
-
-                    <div className="border-b my-3"></div>
-
-                    {/* Activity */}
-                    <div>
-                      <h3 className="font-semibold mb-1">Recent Activity</h3>
-                      <p className="text-gray-700">{activity.title}</p>
-                    </div>
-
-                    <div className="border-b my-3"></div>
-
-                    {/* Summary */}
-                    <div>
-                      <h3 className="font-semibold mb-1">Summary</h3>
-                      <p>
-                        <strong>Success Rate:</strong> {summary.successRate}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            </motion.div>
-          );
-        })}
-      </div>
-    </motion.div>
+              Cancel
+            </Button>
+            <Button
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl shadow-md"
+              onClick={onConfirm}
+            >
+              Save
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
