@@ -18,12 +18,15 @@ import DashboardLoader from "../todos/components/loader";
 import { useAgentStore } from "@/store/agent.store";
 import AgentListPage from "./components/agent-activity";
 import { selectData } from "./data";
+import toast from "react-hot-toast";
+import { Bot, Globe, Server, Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
 export default function DashboardPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [platform, setPlatform] = useState("instagram");
   const [instance, setInstance] = useState("");
-  const [agent, setAgent] = useState("google");
+  const [agentProvider, setAgentProvider] = useState("google");
   const [error, setError] = useState<string | null>(null);
   const { setAgentData, agentData } = useAgentStore.getState();
   const [selectedStep, setselectedStep] = useState<{
@@ -35,43 +38,58 @@ export default function DashboardPage() {
       [index]: value,
     }));
   };
-  function fixPythonList(str: string) {
-    return str
-      .replace(/None/g, "null") // ubah None → null
-      .replace(/'/g, '"'); // ubah ' → "
-  }
+
   const agentsData = ["ollama", "moonshot", "google"];
-  const getAi = () => {
+  const getAi = async () => {
     setLoading(true);
     setError(null);
 
-    axios
-      .post("/api/agent/activity", { selectedStep, instance, platform })
-      .then((res) => {
-        const stream = res.data?.data?.data;
+    try {
+      const res = await axios.post("/api/agent/activity", {
+        selectedStep,
+        instance,
+        platform,
+        agentProvider,
+      });
 
-        if (!stream) {
-          setError("Invalid agent response");
-          return;
-        }
+      const stream = res.data?.data?.data;
 
-        console.log("📌 Stream Data", stream);
-        let parsedData;
-        let mainData = stream[1];
-        let subData = fixPythonList(stream[2]);
-        console.log(subData);
+      if (!stream) {
+        setError("Invalid agent response");
+        toast.error("Invalid agent response");
+        return;
+      }
 
-        parsedData = JSON.parse(subData);
+      // Cek index 1 null
+      if (stream[1] == null) {
+        setError("Agent did not return valid data for index 1");
+        toast.error("Agent did not return valid data for index 1");
+        return;
+      }
 
-        if (stream[1] !== null) {
-          setData(parsedData);
-        }
-      })
-      .catch((err) => {
-        setError(err.message);
-        console.log("❌ Error:", err);
-      })
-      .finally(() => setLoading(false));
+      console.log("📌 Stream Data", stream);
+
+      let mainData = stream[1];
+
+      let parsedData;
+      try {
+        parsedData = JSON.parse(mainData);
+        console.log(parsedData);
+      } catch (parseErr) {
+        setError("Failed to parse agent data");
+        toast.error("Failed to parse agent data");
+      }
+    } catch (err: any) {
+      if (err.status === 400) {
+        toast.error("Please Fill all input field");
+        return;
+      }
+
+      setError(err?.message || "Unknown error occurred");
+      toast.error(err?.message || "Unknown error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlegetAiActivity = async () => {
@@ -80,10 +98,35 @@ export default function DashboardPage() {
   useEffect(() => {
     console.log(loading, "loadingg.....");
   }, [loading]);
-  // console.log(data.data[1]);
-  // useEffect(() => {
-  //   console.log(selectedStep);
-  // }, [selectedStep]);
+
+  const platforms = [
+    { value: "youtube.com", label: "YouTube", icon: "📺" },
+    { value: "instagram.com", label: "Instagram", icon: "📷" },
+    { value: "x.com", label: "Twitter", icon: "🐦" },
+    { value: "tiktok.com", label: "TikTok", icon: "🎵" },
+  ];
+  const instances = [
+    {
+      label: "instance 1",
+      value: "http://103.215.228.166:7809",
+    },
+    {
+      label: "instance 2",
+      value: "http://103.215.228.166:7810",
+    },
+    {
+      label: "instance 3",
+      value: "http://103.215.228.166:7811",
+    },
+    {
+      label: "instance 4",
+      value: "http://103.215.228.166:7812",
+    },
+    {
+      label: "instance 5",
+      value: "http://103.215.228.166:7813",
+    },
+  ];
   useEffect(() => {
     console.log(data, "ini data");
   }, [data]);
@@ -95,124 +138,155 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="flex flex-col items-center justify-between">
           <h1 className="text-2xl  my-6 font-bold">Ai Prompt</h1>
-          <div className="w-full bg-slate-100 flex flex-col items-center justify-center p-10 rounded-2xl">
-            <form action="" className="w-fit p-6 flex flex-col bg-white">
-              <Select onValueChange={(value) => setPlatform(value)}>
-                <Label className="mt-2  mb-2 font-sans text-black/40">
-                  Select your Platform
-                </Label>
-                <SelectTrigger className="w-[40rem]">
-                  <SelectValue placeholder={platform} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Platform</SelectLabel>
 
-                    <SelectItem value="youtube.com">Youtube</SelectItem>
-                    <SelectItem value="instagram.com">Instagram</SelectItem>
-                    <SelectItem value="x.com">Twitter</SelectItem>
-                    <SelectItem value="tiktok.com">Tiktok</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <Select onValueChange={(value) => setInstance(value)}>
-                <Label className="mt-2  mb-2 font-sans text-black/40">
-                  Select The instance
-                </Label>
-                <SelectTrigger className="w-[40rem]">
-                  <SelectValue placeholder={instance} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>instances</SelectLabel>
-
-                    <SelectItem value="http://103.215.228.166:7809">
-                      Instance 1
-                    </SelectItem>
-                    <SelectItem value="http://103.215.228.166:7810">
-                      Instance 2
-                    </SelectItem>
-                    <SelectItem value="http://103.215.228.166:7811">
-                      Instance 3
-                    </SelectItem>
-                    <SelectItem value="http://103.215.228.166:7812">
-                      Instance 4
-                    </SelectItem>
-                    <SelectItem value="http://103.215.228.166:7813">
-                      Instance 5
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <Select onValueChange={(value) => setAgent(value)}>
-                <Label className="mt-2  mb-2 font-sans text-black/40">
-                  Select The agent provider
-                </Label>
-                <SelectTrigger className="w-[40rem]">
-                  <SelectValue placeholder={agent} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>agents</SelectLabel>
-                    {agentsData.map((el, index) => (
-                      <SelectItem key={index} value={el}>
-                        {el}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {selectData.map((el, index) => (
-                <Select
-                  key={index}
-                  onValueChange={(value) => handleSelect(index, value)}
-                >
-                  <div className="flex  flex-col gap-4">
-                    <Label className="mt-2 font-sans text-black/40">
-                      {el.label}
-                    </Label>
-
-                    <div className="flex justify-center items-center">
-                      <SelectTrigger className="w-[40rem]">
-                        <SelectValue
-                          placeholder={selectedStep[index] || el.title}
-                        />
-                      </SelectTrigger>
-
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Prompt</SelectLabel>
-
-                          {el.data.map((ele, idx) => {
-                            const isUsed =
-                              Object.values(selectedStep).includes(ele) &&
-                              selectedStep[index] !== ele;
-
-                            return (
-                              <SelectItem
-                                key={idx}
-                                value={ele}
-                                disabled={isUsed}
-                              >
-                                {ele}
-                              </SelectItem>
-                            );
-                          })}
-                        </SelectGroup>
-                      </SelectContent>
-                    </div>
-                  </div>
+          <div className="bg-white rounded-2xl shadow-xl border border-slate-200 w-full overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
+              <div className="flex items-center gap-3">
+                <Settings className="w-8 h-8 text-white" />
+                <div>
+                  <h2 className="text-2xl font-bold text-white">
+                    Configuration
+                  </h2>
+                  <p className="text-blue-100 text-sm mt-1">
+                    Configure your automation settings
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="p-8 space-y-6">
+              {/* Platform Selection */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 mb-3">
+                  <Globe className="w-5 h-5 text-slate-600" />
+                  <Label className="text-base font-semibold text-slate-700">
+                    Platform
+                  </Label>
+                </div>
+                <Select onValueChange={setPlatform}>
+                  <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition-colors">
+                    <SelectValue placeholder="Select your platform" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Available Platforms</SelectLabel>
+                      {platforms.map((p) => (
+                        <SelectItem
+                          key={p.value}
+                          value={p.value}
+                          className="cursor-pointer"
+                        >
+                          <span className="flex items-center gap-2">
+                            <span>{p.icon}</span>
+                            <span>{p.label}</span>
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
                 </Select>
+              </div>
+
+              {/* Instance Selection */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 mb-3">
+                  <Server className="w-5 h-5 text-slate-600" />
+                  <Label className="text-base font-semibold text-slate-700">
+                    Instance
+                  </Label>
+                </div>
+                <Select onValueChange={setInstance}>
+                  <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition-colors">
+                    <SelectValue placeholder="Select an instance" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Available Instances</SelectLabel>
+                      {instances.map((i) => (
+                        <SelectItem
+                          key={i.value}
+                          value={i.value}
+                          className="cursor-pointer"
+                        >
+                          {i.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Agent Provider Selection */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 mb-3">
+                  <Bot className="w-5 h-5 text-slate-600" />
+                  <Label className="text-base font-semibold text-slate-700">
+                    Agent Provider
+                  </Label>
+                </div>
+                <Select onValueChange={setAgentProvider}>
+                  <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition-colors">
+                    <SelectValue placeholder="Select an agent provider" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Available Agents</SelectLabel>
+                      {agentsData.map((agent, index) => (
+                        <SelectItem
+                          key={index}
+                          value={agent}
+                          className="cursor-pointer"
+                        >
+                          {agent}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Dynamic Step Selection */}
+              {selectData.map((step, index) => (
+                <div key={index} className="space-y-2">
+                  <Label className="text-base font-semibold text-slate-700 block mb-3">
+                    {step.label}
+                  </Label>
+                  <Select onValueChange={(value) => handleSelect(index, value)}>
+                    <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition-colors">
+                      <SelectValue
+                        placeholder={selectedStep[index] || step.title}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Options</SelectLabel>
+                        {step.data.map((option, idx) => {
+                          const isUsed =
+                            Object.values(selectedStep).includes(option) &&
+                            selectedStep[index] !== option;
+                          return (
+                            <SelectItem
+                              key={idx}
+                              value={option}
+                              disabled={isUsed}
+                              className="cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {option}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
               ))}
-            </form>
-            <div className="flex w-full mt-7 justify-end">
-              <button
-                disabled={loading ? true : false}
-                onClick={handlegetAiActivity}
-                className="rounded-md border border-gray-300 bg-gray-50 hover:bg-gray-100 px-4 py-2 text-sm font-medium"
-              >
-                Run the agent
-              </button>
+              <div className="flex w-full mt-7 justify-end">
+                <Button
+                  disabled={loading ? true : false}
+                  onClick={handlegetAiActivity}
+                >
+                  Run the agent
+                </Button>
+              </div>
             </div>
           </div>
           {/* <h1 className="text-2xl font-semibold tracking-tight">

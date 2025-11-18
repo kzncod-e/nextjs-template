@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { Bot, Calendar, Home, Inbox, Search, Settings } from "lucide-react";
 
 import {
   Sidebar,
@@ -15,13 +15,13 @@ import {
 const items = [
   {
     title: "Home",
-    url: "#",
+    url: "/dashboard",
     icon: Home,
   },
   {
     title: "agent Activities",
-    url: "/agent",
-    icon: Home,
+    url: "/dashboard/agent",
+    icon: Bot,
   },
 ];
 

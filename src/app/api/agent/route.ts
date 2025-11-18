@@ -1,7 +1,7 @@
 import { createAgentActivity } from "@/modules/agent/actions/create-agent.action";
+import { getAllAgentActivity } from "@/modules/agent/actions/get-all-agentAvtivity.action";
 import { createFullAgentSchema } from "@/modules/agent/model/agent.model";
 import { NextRequest, NextResponse } from "next/server";
-import { success } from "zod";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -17,11 +17,17 @@ export async function POST(req: NextRequest) {
 
   const result = await createAgentActivity(parsed.data);
 
-  return NextResponse.json(result, { status: 201 });
+  return NextResponse.json({data:result}, { status: 201 });
 
   }
 
-export async function GET() {
-  
+export async function GET(res:NextResponse) {
+  try {
+    
+    const result = await getAllAgentActivity()
+    return NextResponse.json({data:result},{status:200,})
+  } catch (error) {
+    return NextResponse.json({message:"failed to get ai report"})
+  }
   
 }
