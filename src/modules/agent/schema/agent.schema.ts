@@ -50,6 +50,6 @@ export const summaryRelations = relations(summary, ({ one }) => ({
 }));
 export type AgentActivity = 
   InferSelectModel<typeof agentActivity> & {
-    activities: InferSelectModel<typeof activity>[];
+    activities: InferSelectModel<typeof activity>[]|null;
     summary: InferSelectModel<typeof summary>|null;
   };
