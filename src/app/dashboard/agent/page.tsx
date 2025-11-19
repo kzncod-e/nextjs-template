@@ -7,6 +7,11 @@ import {
   ExternalLink,
   Zap,
   Target,
+  Camera,
+  Bird,
+  Play,
+  Music,
+  Bot,
 } from "lucide-react";
 import { getAllAgentActivity } from "@/modules/agent/actions/get-all-agentAvtivity.action";
 export default async function AgentListPage() {
@@ -54,17 +59,17 @@ export default async function AgentListPage() {
   ];
 
   const getPlatformIcon = (platform: string) => {
-    const icons = {
-      Instagram: "📷",
-      Twitter: "🐦",
-      YouTube: "📺",
-      TikTok: "🎵",
+    const icons: Record<string, React.JSX.Element> = {
+      Instagram: <Camera className="w-8 h-8 text-pink-500" />,
+      Twitter: <Bird className="w-8 h-8 text-blue-500" />,
+      YouTube: <Play className="w-8 h-8 text-red-500" />,
+      TikTok: <Music className="w-8 h-8 text-black" />,
     };
-    return icons[platform] || "🤖";
+    return icons[platform] || <Bot className="w-8 h-8 text-gray-500" />;
   };
 
-  const getStatusColor = (status) => {
-    return status === "running" ? "bg-emerald-500" : "bg-slate-400";
+  const getStatusColor = (status: string) => {
+    return status === "success" ? "bg-emerald-500" : "bg-slate-400";
   };
   if (data.length > 0) {
     console.log(data);
@@ -167,11 +172,11 @@ export default async function AgentListPage() {
                       <CardHeader className="bg-gradient-to-br from-slate-50 to-blue-50 border-b border-slate-100 pb-4">
                         <CardTitle className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <span className="text-3xl">
+                            <div className="flex items-center justify-center">
                               {getPlatformIcon(
                                 item.platform ? item.platform : "instagram"
                               )}
-                            </span>
+                            </div>
                             <div>
                               <div className="flex items-center gap-2">
                                 <h3 className="text-xl font-bold text-slate-900">
@@ -187,7 +192,7 @@ export default async function AgentListPage() {
                           <div className="flex items-center gap-2">
                             <span
                               className={`w-2.5 h-2.5 rounded-full ${getStatusColor(
-                                item.status
+                                item.status ? item.status : ""
                               )} animate-pulse`}
                             ></span>
                             <span className="text-xs font-semibold text-slate-600 capitalize">
@@ -225,7 +230,8 @@ export default async function AgentListPage() {
                             </h3>
                           </div>
                           <p className="text-slate-700 pl-4 leading-relaxed">
-                            {activities.map(({ title }) => title)}
+                            {activities?.map(({ title }) => title) ||
+                              "No activities"}
                           </p>
                         </div>
 

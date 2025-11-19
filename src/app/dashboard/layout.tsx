@@ -4,7 +4,12 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { getSession } from "@/modules/auth/utils/auth-utils";
 import { redirect } from "next/navigation";
 import { Navigation } from "@/components/navigation";
-export default async function LayoutDashboard({ children }) {
+import { ReactNode } from "react";
+export default async function LayoutDashboard({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const session = await getSession();
 
   if (!session) {

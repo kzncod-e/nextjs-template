@@ -1,16 +1,19 @@
-import { AgentSessionData } from "@/modules/agent/agent.type";
+
+import { AgentActivity } from "@/modules/agent/schema/agent.schema";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 
 interface AgentStoreState {
-  agentData: AgentSessionData | null;
-  setAgentData: (data: AgentSessionData) => void;
+  agentData: AgentActivity | null;
+  setAgentData: (data: AgentActivity) => void;
   clearAgentData: () => void;
 }
 
+
+
 export const useAgentStore = create(
-  persist<AgentStoreState>(
+  persist<AgentStoreState, []>(
     (set) => ({
       agentData: null,
 
@@ -20,9 +23,7 @@ export const useAgentStore = create(
     }),
     {
       name: "agent-storage",          // localStorage key
-      partialize: (state) => ({
-        agentData: state.agentData,   // yang disimpan hanya agentData
-      }),
+      
     }
   )
 );

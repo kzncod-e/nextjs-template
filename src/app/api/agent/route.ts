@@ -1,6 +1,7 @@
 import { createAgentActivity } from "@/modules/agent/actions/create-agent.action";
 import { getAllAgentActivity } from "@/modules/agent/actions/get-all-agentAvtivity.action";
 import { createFullAgentSchema } from "@/modules/agent/model/agent.model";
+
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -10,7 +11,7 @@ export async function POST(req: NextRequest) {
   const parsed = createFullAgentSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: parsed.error.errors[0].message },
+      { error:parsed.error.message},
       { status: 400 }
     );
   }
@@ -21,13 +22,13 @@ export async function POST(req: NextRequest) {
 
   }
 
-export async function GET(res:NextResponse) {
+export async function GET(req: NextRequest) {
   try {
-    
+
     const result = await getAllAgentActivity()
     return NextResponse.json({data:result},{status:200,})
   } catch (error) {
     return NextResponse.json({message:"failed to get ai report"})
   }
-  
+
 }

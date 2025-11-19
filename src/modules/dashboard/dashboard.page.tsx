@@ -16,7 +16,7 @@ import {
 import { Label } from "@/components/ui/label";
 import DashboardLoader from "../todos/components/loader";
 import { useAgentStore } from "@/store/agent.store";
-import AgentListPage from "./components/agent-activity";
+import AgentListPage from "./components/agent-review";
 import { selectData } from "./data";
 import toast from "react-hot-toast";
 import { Bot, Globe, Server, Settings } from "lucide-react";
@@ -32,7 +32,7 @@ export default function DashboardPage() {
   const [selectedStep, setselectedStep] = useState<{
     [key: number]: string;
   }>({});
-  const handleSelect = (index, value) => {
+  const handleSelect = (index: number, value: string) => {
     setselectedStep((prev) => ({
       ...prev,
       [index]: value,
@@ -244,7 +244,7 @@ export default function DashboardPage() {
                 </Select>
               </div>
 
-              {/* Dynamic Step Selection */}
+              {/* Dynamic Step Seleaction */}
               {selectData.map((step, index) => (
                 <div key={index} className="space-y-2">
                   <Label className="text-base font-semibold text-slate-700 block mb-3">

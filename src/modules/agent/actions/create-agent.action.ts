@@ -10,7 +10,7 @@ import { agentActivity, activity, summary } from "../schema/agent.schema";
 export async function createAgentActivity(input: TCreateFullAgent) {
   const parsed = createFullAgentSchema.safeParse(input);
   if (!parsed.success) {
-    throw new Error(parsed.error.errors[0].message);
+    throw new Error(parsed.error.message);
   }
 
   const db = await getDb();

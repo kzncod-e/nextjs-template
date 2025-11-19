@@ -1,12 +1,14 @@
 import { getAgentActivity } from "@/modules/agent/actions/get-agentActivity.action";
 import { NextResponse } from "next/server";
 
-export async function GET( req: Request,
-  { params }: { params: { id: string;  }}){
-const id = params
-if(!id){
-    return NextResponse.json({message:"please provide the agent id"},{status:400})
-}
-const result = await getAgentActivity(Number(id))
-return NextResponse.json({result},{status:200})
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const  id  = await params;
+  if (!id) {
+    throw new Error("please provied the agent id")
+  }
+  const result = await getAgentActivity(id);
+  return NextResponse.json({ result }, { status: 200 });
 }

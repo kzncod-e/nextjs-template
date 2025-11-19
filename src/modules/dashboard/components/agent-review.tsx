@@ -13,8 +13,15 @@ import {
   X,
   Save,
 } from "lucide-react";
+interface AgentOverviewType {
+  onConfirm?: () => void;
+  onCancel?: () => void;
+}
 
-export default function AgentOverview({ onConfirm, onCancel }) {
+export default function AgentOverview({
+  onConfirm,
+  onCancel,
+}: AgentOverviewType) {
   // Sample data structure
   const agentFullDummy = [
     {
@@ -46,14 +53,16 @@ export default function AgentOverview({ onConfirm, onCancel }) {
       : "bg-red-50 border-red-200";
   const StatusIcon = agent.status === "success" ? CheckCircle : XCircle;
 
-  const getPlatformIcon = (platform) => {
+  type Platform = "Instagram" | "Twitter" | "YouTube" | "TikTok";
+
+  const getPlatformIcon = (platform: string) => {
     const icons = {
       Instagram: "📷",
       Twitter: "🐦",
       YouTube: "📺",
       TikTok: "🎵",
-    };
-    return icons[platform] || "🤖";
+    } as const;
+    return icons[platform as keyof typeof icons] || "🤖";
   };
 
   return (
