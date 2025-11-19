@@ -59,9 +59,12 @@ export default function DashboardPage() {
         toast.error("Invalid agent response");
         return;
       }
+      console.log(stream, "ini data");
 
       // Cek index 1 null
       if (stream[1] == null) {
+        console.error("data not exist");
+
         setError("Agent did not return valid data for index 1");
         toast.error("Agent did not return valid data for index 1");
         return;
