@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import axios from "axios";
 import {
@@ -40,7 +40,7 @@ export default function DashboardPage() {
   };
 
   const agentsData = ["ollama", "moonshot", "google"];
-  const getAi = async () => {
+  const getAi = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -90,7 +90,7 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [platform, instance, agentProvider, selectedStep]);
 
   const handlegetAiActivity = async () => {
     getAi();
@@ -99,34 +99,40 @@ export default function DashboardPage() {
     console.log(loading, "loadingg.....");
   }, [loading]);
 
-  const platforms = [
-    { value: "youtube.com", label: "YouTube", icon: "📺" },
-    { value: "instagram.com", label: "Instagram", icon: "📷" },
-    { value: "x.com", label: "Twitter", icon: "🐦" },
-    { value: "tiktok.com", label: "TikTok", icon: "🎵" },
-  ];
-  const instances = [
-    {
-      label: "instance 1",
-      value: "http://103.215.228.166:7809",
-    },
-    {
-      label: "instance 2",
-      value: "http://103.215.228.166:7810",
-    },
-    {
-      label: "instance 3",
-      value: "http://103.215.228.166:7811",
-    },
-    {
-      label: "instance 4",
-      value: "http://103.215.228.166:7812",
-    },
-    {
-      label: "instance 5",
-      value: "http://103.215.228.166:7813",
-    },
-  ];
+  const platforms = useMemo(
+    () => [
+      { value: "youtube.com", label: "YouTube", icon: "📺" },
+      { value: "instagram.com", label: "Instagram", icon: "📷" },
+      { value: "x.com", label: "Twitter", icon: "🐦" },
+      { value: "tiktok.com", label: "TikTok", icon: "🎵" },
+    ],
+    []
+  );
+  const instances = useMemo(
+    () => [
+      {
+        label: "instance 1",
+        value: "http://103.215.228.166:7809",
+      },
+      {
+        label: "instance 2",
+        value: "http://103.215.228.166:7810",
+      },
+      {
+        label: "instance 3",
+        value: "http://103.215.228.166:7811",
+      },
+      {
+        label: "instance 4",
+        value: "http://103.215.228.166:7812",
+      },
+      {
+        label: "instance 5",
+        value: "http://103.215.228.166:7813",
+      },
+    ],
+    []
+  );
   useEffect(() => {
     console.log(data, "ini data");
   }, [data]);
