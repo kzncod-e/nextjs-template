@@ -137,170 +137,134 @@ export default function DashboardPage() {
     console.log(data, "ini data");
   }, [data]);
   return (
-    <div className="min-h-screen bg-white text-gray-900 p-8">
-      <div className="max-w-5xl mx-auto space-y-8">
-        {/* Debug Info - Remove in production */}
-
-        {/* Header */}
-        <div className="flex flex-col items-center justify-between">
-          <h1 className="text-2xl  my-6 font-bold">Ai Prompt</h1>
-
-          <div className="bg-white rounded-2xl shadow-xl border border-slate-200 w-full overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
-              <div className="flex items-center gap-3">
-                <Settings className="w-8 h-8 text-white" />
-                <div>
-                  <h2 className="text-2xl font-bold text-white">
-                    Configuration
-                  </h2>
-                  <p className="text-blue-100 text-sm mt-1">
-                    Configure your automation settings
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="p-8 space-y-6">
-              {/* Platform Selection */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 mb-3">
-                  <Globe className="w-5 h-5 text-slate-600" />
-                  <Label className="text-base font-semibold text-slate-700">
-                    Platform
-                  </Label>
-                </div>
-                <Select onValueChange={setPlatform}>
-                  <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition-colors">
-                    <SelectValue placeholder="Select your platform" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Available Platforms</SelectLabel>
-                      {platforms.map((p) => (
-                        <SelectItem
-                          key={p.value}
-                          value={p.value}
-                          className="cursor-pointer"
-                        >
-                          <span className="flex items-center gap-2">
-                            <span>{p.icon}</span>
-                            <span>{p.label}</span>
-                          </span>
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Instance Selection */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 mb-3">
-                  <Server className="w-5 h-5 text-slate-600" />
-                  <Label className="text-base font-semibold text-slate-700">
-                    Instance
-                  </Label>
-                </div>
-                <Select onValueChange={setInstance}>
-                  <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition-colors">
-                    <SelectValue placeholder="Select an instance" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Available Instances</SelectLabel>
-                      {instances.map((i) => (
-                        <SelectItem
-                          key={i.value}
-                          value={i.value}
-                          className="cursor-pointer"
-                        >
-                          {i.label}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Agent Provider Selection */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 mb-3">
-                  <Bot className="w-5 h-5 text-slate-600" />
-                  <Label className="text-base font-semibold text-slate-700">
-                    Agent Provider
-                  </Label>
-                </div>
-                <Select onValueChange={setAgentProvider}>
-                  <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition-colors">
-                    <SelectValue placeholder="Select an agent provider" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Available Agents</SelectLabel>
-                      {agentsData.map((agent, index) => (
-                        <SelectItem
-                          key={index}
-                          value={agent}
-                          className="cursor-pointer"
-                        >
-                          {agent}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Dynamic Step Seleaction */}
-              {selectData.map((step, index) => (
-                <div key={index} className="space-y-2">
-                  <Label className="text-base font-semibold text-slate-700 block mb-3">
-                    {step.label}
-                  </Label>
-                  <Select onValueChange={(value) => handleSelect(index, value)}>
-                    <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition-colors">
-                      <SelectValue
-                        placeholder={selectedStep[index] || step.title}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Options</SelectLabel>
-                        {step.data.map((option, idx) => {
-                          const isUsed =
-                            Object.values(selectedStep).includes(option) &&
-                            selectedStep[index] !== option;
-                          return (
-                            <SelectItem
-                              key={idx}
-                              value={option}
-                              disabled={isUsed}
-                              className="cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              {option}
-                            </SelectItem>
-                          );
-                        })}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-              ))}
-              <div className="flex w-full mt-7 justify-end">
-                <Button
-                  disabled={loading ? true : false}
-                  onClick={handlegetAiActivity}
-                >
-                  Run the agent
-                </Button>
-              </div>
-            </div>
-          </div>
-          {/* <h1 className="text-2xl font-semibold tracking-tight">
-            AI Agent Overview
-          </h1> */}
+    <div className="p-8 space-y-6">
+      {/* Platform Selection */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 mb-3">
+          <Globe className="w-5 h-5 text-slate-600" />
+          <Label className="text-base font-semibold text-slate-700">
+            Platform
+          </Label>
         </div>
+        <Select onValueChange={setPlatform}>
+          <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition-colors">
+            <SelectValue placeholder="Select your platform" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Available Platforms</SelectLabel>
+              {platforms.map((p) => (
+                <SelectItem
+                  key={p.value}
+                  value={p.value}
+                  className="cursor-pointer"
+                >
+                  <span className="flex items-center gap-2">
+                    <span>{p.icon}</span>
+                    <span>{p.label}</span>
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
 
-        {loading ? <DashboardLoader /> : <AgentListPage />}
+      {/* Instance Selection */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 mb-3">
+          <Server className="w-5 h-5 text-slate-600" />
+          <Label className="text-base font-semibold text-slate-700">
+            Instance
+          </Label>
+        </div>
+        <Select onValueChange={setInstance}>
+          <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition-colors">
+            <SelectValue placeholder="Select an instance" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Available Instances</SelectLabel>
+              {instances.map((i) => (
+                <SelectItem
+                  key={i.value}
+                  value={i.value}
+                  className="cursor-pointer"
+                >
+                  {i.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Agent Provider Selection */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 mb-3">
+          <Bot className="w-5 h-5 text-slate-600" />
+          <Label className="text-base font-semibold text-slate-700">
+            Agent Provider
+          </Label>
+        </div>
+        <Select onValueChange={setAgentProvider}>
+          <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition-colors">
+            <SelectValue placeholder="Select an agent provider" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Available Agents</SelectLabel>
+              {agentsData.map((agent, index) => (
+                <SelectItem
+                  key={index}
+                  value={agent}
+                  className="cursor-pointer"
+                >
+                  {agent}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Dynamic Step Seleaction */}
+      {selectData.map((step, index) => (
+        <div key={index} className="space-y-2">
+          <Label className="text-base font-semibold text-slate-700 block mb-3">
+            {step.label}
+          </Label>
+          <Select onValueChange={(value) => handleSelect(index, value)}>
+            <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition-colors">
+              <SelectValue placeholder={selectedStep[index] || step.title} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Options</SelectLabel>
+                {step.data.map((option, idx) => {
+                  const isUsed =
+                    Object.values(selectedStep).includes(option) &&
+                    selectedStep[index] !== option;
+                  return (
+                    <SelectItem
+                      key={idx}
+                      value={option}
+                      disabled={isUsed}
+                      className="cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {option}
+                    </SelectItem>
+                  );
+                })}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      ))}
+      <div className="flex w-full mt-7 justify-end">
+        <Button disabled={loading ? true : false} onClick={handlegetAiActivity}>
+          Run the agent
+        </Button>
       </div>
     </div>
   );
