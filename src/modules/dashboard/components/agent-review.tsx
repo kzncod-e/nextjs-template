@@ -1,7 +1,9 @@
+"use client";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+
 import {
   CheckCircle,
   XCircle,
@@ -13,10 +15,13 @@ import {
   X,
   Save,
 } from "lucide-react";
+import { AgentActivity } from "@/modules/agent/schema/agent.schema";
+import { useAgentStore } from "@/store/agent.store";
 interface AgentOverviewType {
   onConfirm?: () => void;
   onCancel?: () => void;
 }
+const { agentData } = useAgentStore.getState();
 
 export default function AgentOverview({
   onConfirm,
@@ -53,7 +58,7 @@ export default function AgentOverview({
       : "bg-red-50 border-red-200";
   const StatusIcon = agent.status === "success" ? CheckCircle : XCircle;
 
-  type Platform = "Instagram" | "Twitter" | "YouTube" | "TikTok";
+  type Platform = "Instagram" | "x.com" | "YouTube" | "TikTok";
 
   const getPlatformIcon = (platform: string) => {
     const icons = {
@@ -64,6 +69,7 @@ export default function AgentOverview({
     } as const;
     return icons[platform as keyof typeof icons] || "🤖";
   };
+  console.log(agentData);
 
   return (
     <div className="flex justify-center">
@@ -110,11 +116,17 @@ export default function AgentOverview({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-4xl">
-                      {getPlatformIcon(agent.platform)}
+                      {getPlatformIcon(
+                        agentData
+                          ? agentData.platform
+                            ? agentData.platform
+                            : ""
+                          : ""
+                      )}
                     </span>
                     <div>
                       <h4 className="text-lg font-bold text-slate-900">
-                        {agent?.name}
+                        {agentData?.agent}
                       </h4>
                       <p className="text-sm text-slate-600 mt-0.5">
                         Automation Agent
@@ -126,7 +138,7 @@ export default function AgentOverview({
                     className={`${statusBg} ${statusColor} border px-4 py-1.5 font-semibold flex items-center gap-2`}
                   >
                     <StatusIcon className="w-4 h-4" />
-                    {agent?.status}
+                    {agentData?.status}
                   </Badge>
                 </div>
 
@@ -140,7 +152,7 @@ export default function AgentOverview({
                         variant="secondary"
                         className="bg-blue-100 text-blue-700 hover:bg-blue-100"
                       >
-                        {agent.platform}
+                        {agentData?.platform}
                       </Badge>
                     </div>
                   </div>
@@ -149,7 +161,7 @@ export default function AgentOverview({
                       Status
                     </p>
                     <p className={`font-semibold ${statusColor} capitalize`}>
-                      {agent?.status}
+                      {agentData?.status}
                     </p>
                   </div>
                 </div>
@@ -162,37 +174,40 @@ export default function AgentOverview({
                 <div className="w-1 h-6 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full"></div>
                 <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-purple-600" />
-                  Activity
+                  Activities
                 </h3>
               </div>
-
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 space-y-4 border border-purple-200">
-                <div className="space-y-2">
-                  <div className="flex items-start gap-2">
-                    <p className="text-sm font-semibold text-slate-600 min-w-[80px]">
-                      Title:
-                    </p>
-                    <p className="text-slate-900 font-medium flex-1">
-                      {activity?.title}
-                    </p>
+              {agentData?.activities?.map(({ title, description }, index) => (
+                <div
+                  key={index}
+                  className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 space-y-4 border border-purple-200"
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-2">
+                      <p className="text-sm font-semibold text-slate-600 min-w-[80px]">
+                        Title:
+                      </p>
+                      <p className="text-slate-900 font-medium flex-1">
+                        {title}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pt-4 border-t border-purple-200">
+                    <div className="flex items-start gap-2">
+                      <p className="text-sm font-semibold text-slate-600 min-w-[80px]">
+                        Description:
+                      </p>
+                      <p className="text-slate-700 flex-1 leading-relaxed">
+                        {activity?.description || (
+                          <span className="text-slate-400 italic">
+                            {description}
+                          </span>
+                        )}
+                      </p>
+                    </div>
                   </div>
                 </div>
-
-                <div className="pt-4 border-t border-purple-200">
-                  <div className="flex items-start gap-2">
-                    <p className="text-sm font-semibold text-slate-600 min-w-[80px]">
-                      Description:
-                    </p>
-                    <p className="text-slate-700 flex-1 leading-relaxed">
-                      {activity?.description || (
-                        <span className="text-slate-400 italic">
-                          No description provided
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
 
             {/* Summary Section */}
@@ -213,12 +228,12 @@ export default function AgentOverview({
                     </p>
                     <div className="flex items-center gap-3">
                       <div className="text-3xl font-bold text-green-600">
-                        {summary?.successRate}
+                        {agentData?.summary?.successRate}
                       </div>
                       <div className="flex-1 bg-slate-200 rounded-full h-2 overflow-hidden">
                         <div
                           className="bg-gradient-to-r from-green-500 to-emerald-500 h-full rounded-full transition-all duration-500"
-                          style={{ width: summary?.successRate }}
+                          style={{ width: agentData?.summary?.successRate }}
                         ></div>
                       </div>
                     </div>
@@ -235,7 +250,7 @@ export default function AgentOverview({
                       <p className="text-slate-700 leading-relaxed">
                         {summary?.notes || (
                           <span className="text-slate-400 italic">
-                            No notes available
+                            {agentData?.summary?.notes}
                           </span>
                         )}
                       </p>

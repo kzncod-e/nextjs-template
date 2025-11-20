@@ -21,6 +21,7 @@ import { selectData } from "./data";
 import toast from "react-hot-toast";
 import { Bot, Globe, Server, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ZodError } from "zod";
 export default function DashboardPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -40,63 +41,78 @@ export default function DashboardPage() {
   };
 
   const agentsData = ["ollama", "moonshot", "google"];
-  const getAi = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  // const getAi = useCallback(async () => {
+  //   setLoading(true);
+  //   setError(null);
 
+  //   try {
+  //     const res = await axios.post("/api/agent/activity", {
+  //       selectedStep,
+  //       instance,
+  //       platform,
+  //       agentProvider,
+  //     });
+
+  //     const stream = res.data?.data?.data;
+
+  //     if (!stream) {
+  //       setError("Invalid agent response");
+  //       toast.error("Invalid agent response");
+  //       return;
+  //     }
+  //     console.log(stream, "ini data");
+
+  //     // Cek index 1 null
+  //     if (stream[1] == null) {
+  //       console.error("data not exist");
+
+  //       setError("Agent did not return valid data for index 1");
+  //       toast.error("Agent did not return valid data for index 1");
+  //       return;
+  //     }
+
+  //     console.log("📌 Stream Data", stream);
+
+  //     let mainData = stream[1];
+
+  //     let parsedData;
+  //     parsedData = JSON.parse(mainData);
+  //   } catch (err: any) {
+  //     if (err.status === 400) {
+  //       toast.error("Please Fill all input field");
+  //       return;
+  //     }
+
+  //     setError(err?.message || "Unknown error occurred");
+  //     toast.error(err?.message || "Unknown error occurred");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, [platform, instance, agentProvider, selectedStep]);
+
+  const handlegetAiActivity = async () => {
     try {
-      const res = await axios.post("/api/agent/activity", {
-        selectedStep,
-        instance,
+      setLoading(true);
+      const res = await axios.post("http://127.0.0.1:5000/run-x-agent", {
         platform,
-        agentProvider,
+        selectedStep: Object.values(selectedStep),
       });
-
-      const stream = res.data?.data?.data;
-
-      if (!stream) {
-        setError("Invalid agent response");
-        toast.error("Invalid agent response");
-        return;
+      console.log(res.data.final, "ini data respond>>>>>>>>>>>>>>");
+      const result = res.data.final;
+      setAgentData(JSON.parse(result));
+      if (res.status == 200) {
+        toast.success("agent run successfully ");
       }
-      console.log(stream, "ini data");
-
-      // Cek index 1 null
-      if (stream[1] == null) {
-        console.error("data not exist");
-
-        setError("Agent did not return valid data for index 1");
-        toast.error("Agent did not return valid data for index 1");
-        return;
+      if (res.status == 422) {
+        toast.error("please provided the right input");
       }
-
-      console.log("📌 Stream Data", stream);
-
-      let mainData = stream[1];
-
-      let parsedData;
-      try {
-        parsedData = JSON.parse(mainData);
-        console.log(parsedData);
-      } catch (parseErr) {
-        setError("Failed to parse agent data");
-        toast.error("Failed to parse agent data");
+    } catch (error) {
+      if (error instanceof ZodError) {
+        console.log(error.message[0]);
       }
-    } catch (err: any) {
-      if (err.status === 400) {
-        toast.error("Please Fill all input field");
-        return;
-      }
-
-      setError(err?.message || "Unknown error occurred");
-      toast.error(err?.message || "Unknown error occurred");
     } finally {
       setLoading(false);
     }
-  }, [platform, instance, agentProvider, selectedStep]);
-
-  const handlegetAiActivity = async () => {
-    getAi();
   };
   useEffect(() => {
     console.log(loading, "loadingg.....");
@@ -136,9 +152,7 @@ export default function DashboardPage() {
     ],
     []
   );
-  useEffect(() => {
-    console.log(data, "ini data");
-  }, [data]);
+
   return (
     <div className="p-8 space-y-6">
       {/* Platform Selection */}

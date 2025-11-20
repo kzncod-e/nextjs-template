@@ -73,21 +73,18 @@ export const agentFullDummy = [
   },
 ];
 
-const prompData = [
-  "Create 1 post related to AI, tech, or lifestyle. Include a short caption. After posting, extract and save the post ID or direct URL.",
-  
-  "Scroll through the feed for several seconds. Collect and record multiple viewed posts, including post ID, author, and snippet of the content if available.",
-  
-  "Watch 2–3 videos until completion. For each video, record the title, duration, and video URL if accessible.",
-  
-  "Like at least 3 posts in the same niche. For every liked post, record post ID, title, and author username.",
-  
-  "Bookmark or save 2–3 interesting posts. For each saved post, record post ID, title, and author.",
-  
-  "Comment naturally on 2–3 posts. For each comment, store post ID, post title, author username, and the comment text written.",
-  
-  "Follow 2–5 niche-related accounts. For each followed profile, record the username and account display name."
-];
+const prompData = 
+  [
+    
+        "Create one post with niche-related content (AI/tech/lifestyle)",
+        "Scroll feed naturally and record viewed posts",
+        "Watch several videos, record title and duration",
+        "Like relevant posts",
+        "Bookmark interesting posts",
+        "Comment naturally",
+        "Follow niche-related accounts and save username + account name"
+    ]
+
 
 export  const selectData = [
     {
