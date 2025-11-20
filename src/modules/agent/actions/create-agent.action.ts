@@ -1,64 +1,48 @@
-import { getDb } from "@/db";
-import {
-  createFullAgentSchema,
-  fullAgentResponseSchema,
-  TCreateFullAgent,
-} from "../model/agent.model";
+import { activity, agentActivity, getDb, summary } from "@/db";
+import { CreateAgentType, createFullAgentSchema } from "../model/agent.model";
 
-import { agentActivity, activity, summary } from "../schema/agent.schema";
-
-export async function createAgentActivity(input: TCreateFullAgent) {
+export async function createAgentActivity(input: CreateAgentType) {
   const parsed = createFullAgentSchema.safeParse(input);
   if (!parsed.success) {
     throw new Error(parsed.error.message);
   }
 
   const db = await getDb();
-  const { agent, activity: act, summary: sum } = parsed.data;
+  const data = parsed.data;
 
-  
-  const agentRes = await db
+  // 1. Insert Agent
+  const [createdAgent] = await db
     .insert(agentActivity)
     .values({
-      agent: agent.name,
-      platform: agent.platform,
-      status: agent.status,
-    })
-    // untutk mengembalikan table yang baru dibuat
-    .returning();
-// karena responsenya adalah array kita ambil data pertama
-  const createdAgent = agentRes[0];
 
-  // 2. Insert activity
-  const activityRes = await db
-    .insert(activity)
-    .values({
+      agent: data.agent,
+      platform: data.platform,
+      status: data.status,
+    })
+    .returning();
+
+  // 2. Insert all activities (LOOP)
+  for (const act of data.activities) {
+    await db.insert(activity).values({
       title: act.title,
-      description: act.description ?? null,
-      // masukan id agentActivity yang baru dibuat
+      description: act.description,
       agentId: createdAgent.id,
-    })
-    .returning();
-
-  const createdActivity = activityRes[0];
+    });
+  }
 
   // 3. Insert summary
-  const summaryRes = await db
+  const [createdSummary] = await db
     .insert(summary)
     .values({
-      successRate: sum.successRate,
-      notes: sum.notes ?? null,
+      
+      successRate: data.summary.successRate,
+      notes: data.summary.notes,
       agentId: createdAgent.id,
     })
     .returning();
 
-  const createdSummary = summaryRes[0];
-
-  const result = {
+  return {
     agent: createdAgent,
-    activity: createdActivity,
     summary: createdSummary,
   };
-
-  return fullAgentResponseSchema.parse(result);
 }

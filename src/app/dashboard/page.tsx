@@ -1,8 +1,5 @@
-import AgentListPage from "@/modules/agent/components/agent-list.page";
 import AgentOverview from "@/modules/dashboard/components/agent-review";
 import DashboardPage from "@/modules/dashboard/dashboard.page";
-import Dashboard from "@/modules/dashboard/dashboard.page";
-import DashboardLoader from "@/modules/todos/components/loader";
 import { Settings } from "lucide-react";
 
 export default async function Page() {

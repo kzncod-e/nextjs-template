@@ -2,13 +2,15 @@ import { createAgentActivity } from "@/modules/agent/actions/create-agent.action
 import { getAllAgentActivity } from "@/modules/agent/actions/get-all-agentAvtivity.action";
 import { createFullAgentSchema } from "@/modules/agent/model/agent.model";
 
+
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
 
+  console.log(body.agentData);
   
-  const parsed = createFullAgentSchema.safeParse(body);
+  const parsed =createFullAgentSchema.safeParse(body.agentData);
   if (!parsed.success) {
     return NextResponse.json(
       { error:parsed.error.message},
