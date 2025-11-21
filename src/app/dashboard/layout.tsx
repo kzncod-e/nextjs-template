@@ -18,6 +18,7 @@ export default async function LayoutDashboard({
   return (
     <SidebarProvider>
       <AppSidebar />
+      <SidebarTrigger className="fixed left-[20%]" />
       <main className="w-full">
         <div className="w-full mx-auto py-8 px-4">{children}</div>
       </main>

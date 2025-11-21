@@ -1,6 +1,7 @@
 import { createAgentActivity } from "@/modules/agent/actions/create-agent.action";
 import { getAllAgentActivity } from "@/modules/agent/actions/get-all-agentAvtivity.action";
 import { createFullAgentSchema } from "@/modules/agent/model/agent.model";
+import { revalidatePath } from "next/cache";
 
 
 import { NextRequest, NextResponse } from "next/server";
@@ -21,6 +22,7 @@ export async function POST(req: NextRequest) {
 
   const result = await createAgentActivity(parsed.data);
 
+  revalidatePath("/dashboard/agent")
   return NextResponse.json({data:result}, { status: 201 });
 
   }

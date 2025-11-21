@@ -1,171 +1,141 @@
-import React from "react";
-import styled from "styled-components";
+import React, { useState, useEffect } from "react";
 
-const DashboardLoader = () => {
+const LoadingScreen = () => {
+  const [activeStep, setActiveStep] = useState(0);
+
+  const steps = [
+    { icon: "🔍", text: "Initializing system..." },
+    { icon: "📡", text: "Connecting to server..." },
+    { icon: "🧠", text: "Processing request..." },
+    { icon: "✨", text: "Finalizing response..." },
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveStep((prev) => {
+        if (prev < steps.length - 1) {
+          return prev + 1;
+        }
+        return prev;
+      });
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <StyledWrapper>
-      <div className="loader">
-        <div className="circle">
-          <div className="dot" />
-          <div className="outline" />
+    <div className=" h-full w-full flex z-40 i  justify-center fixed inset-0 bg-white/20 to-white p-8">
+      <div className="w-full flex-col  flex items-center justify-center max-w-md">
+        {/* Main container */}
+        <div className="bg-white/10 rounded-3xl w-[30rem] shadow-lg p-10 border border-gray-100">
+          {/* Header */}
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 mb-4 shadow-md">
+              <svg
+                className="w-8 h-8 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-1">
+              AI System
+            </h2>
+            <p className="text-sm text-gray-500">Preparing your experience</p>
+          </div>
+
+          {/* Status messages */}
+          <div className="space-y-5 mb-8">
+            {steps.map((step, index) => {
+              const isActive = index === activeStep;
+              const isPast = index < activeStep;
+              const isFuture = index > activeStep;
+
+              return (
+                <div
+                  key={index}
+                  className="flex items-center gap-3 transition-all duration-500 ease-out"
+                  style={{
+                    opacity: isFuture ? 0 : isPast ? 0.35 : 1,
+                    transform: isFuture ? "translateY(10px)" : "translateY(0)",
+                  }}
+                >
+                  <span className="text-2xl">{step.icon}</span>
+                  <span
+                    className={`text-base transition-all duration-300 ${
+                      isActive
+                        ? "font-semibold text-gray-900"
+                        : "font-normal text-gray-700"
+                    }`}
+                  >
+                    {step.text}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Animated indicator */}
+          <div className="flex justify-center items-center h-8">
+            <div className="flex gap-1.5">
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600"
+                  style={{
+                    animation: `pulse 1.4s ease-in-out ${i * 0.2}s infinite`,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Progress bar */}
+          <div className="mt-8">
+            <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full transition-all duration-1000 ease-out"
+                style={{
+                  width: `${((activeStep + 1) / steps.length) * 100}%`,
+                }}
+              />
+            </div>
+          </div>
         </div>
-        <div className="circle">
-          <div className="dot" />
-          <div className="outline" />
-        </div>
-        <div className="circle">
-          <div className="dot" />
-          <div className="outline" />
-        </div>
-        <div className="circle">
-          <div className="dot" />
-          <div className="outline" />
-        </div>
+
+        {/* Footer text */}
+        <p className="text-center text-xs text-gray-400 mt-6">
+          This may take a few moments
+        </p>
       </div>
-    </StyledWrapper>
+
+      <style>{`
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 0.3;
+            transform: scale(0.8);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.1);
+          }
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        * {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+      `}</style>
+    </div>
   );
 };
 
-const StyledWrapper = styled.div`
-  .loader {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    --color: hsl(0, 0%, 87%);
-    --animation: 2s ease-in-out infinite;
-  }
-
-  .loader .circle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    width: 20px;
-    height: 20px;
-    border: solid 2px var(--color);
-    border-radius: 50%;
-    margin: 0 10px;
-    background-color: transparent;
-    animation: circle-keys var(--animation);
-  }
-
-  .loader .circle .dot {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background-color: var(--color);
-    animation: dot-keys var(--animation);
-  }
-
-  .loader .circle .outline {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    animation: outline-keys var(--animation);
-  }
-
-  .circle:nth-child(2) {
-    animation-delay: 0.3s;
-  }
-
-  .circle:nth-child(3) {
-    animation-delay: 0.6s;
-  }
-
-  .circle:nth-child(4) {
-    animation-delay: 0.9s;
-  }
-
-  .circle:nth-child(5) {
-    animation-delay: 1.2s;
-  }
-
-  .circle:nth-child(2) .dot {
-    animation-delay: 0.3s;
-  }
-
-  .circle:nth-child(3) .dot {
-    animation-delay: 0.6s;
-  }
-
-  .circle:nth-child(4) .dot {
-    animation-delay: 0.9s;
-  }
-
-  .circle:nth-child(5) .dot {
-    animation-delay: 1.2s;
-  }
-
-  .circle:nth-child(1) .outline {
-    animation-delay: 0.9s;
-  }
-
-  .circle:nth-child(2) .outline {
-    animation-delay: 1.2s;
-  }
-
-  .circle:nth-child(3) .outline {
-    animation-delay: 1.5s;
-  }
-
-  .circle:nth-child(4) .outline {
-    animation-delay: 1.8s;
-  }
-
-  .circle:nth-child(5) .outline {
-    animation-delay: 2.1s;
-  }
-
-  @keyframes circle-keys {
-    0% {
-      transform: scale(1);
-      opacity: 1;
-    }
-
-    50% {
-      transform: scale(1.5);
-      opacity: 0.5;
-    }
-
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-
-  @keyframes dot-keys {
-    0% {
-      transform: scale(1);
-    }
-
-    50% {
-      transform: scale(0);
-    }
-
-    100% {
-      transform: scale(1);
-    }
-  }
-
-  @keyframes outline-keys {
-    0% {
-      transform: scale(0);
-      outline: solid 20px var(--color);
-      outline-offset: 0;
-      opacity: 1;
-    }
-
-    100% {
-      transform: scale(1);
-      outline: solid 0 transparent;
-      outline-offset: 20px;
-      opacity: 0;
-    }
-  }
-`;
-
-export default DashboardLoader;
+export default LoadingScreen;

@@ -18,9 +18,12 @@ import {
 import React from "react";
 import { useAgentStore } from "@/store/agent.store";
 import axios from "axios";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function AgentOverview() {
   // hook pertama → selalu konsisten
+  const router = useRouter();
   const agentData = useAgentStore((s) => s.agentData);
 
   // hook kedua → tetap konsisten urutannya
@@ -54,11 +57,14 @@ export default function AgentOverview() {
   const handleSave = async () => {
     try {
       const res = await axios.post("/api/agent", { agentData });
+      toast.success("ai report saved");
+      router.push("/dashboard/agent");
       if (res.status == 201) {
         console.log(res);
       }
     } catch (error) {
       console.log(error);
+      toast.error("failed to save ai report");
     }
   };
 
@@ -257,6 +263,7 @@ export default function AgentOverview() {
 
               <Button
                 onClick={handleSave}
+                disabled={agentData == null}
                 className="px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg"
               >
                 <Save className="w-4 h-4 mr-2" />

@@ -22,6 +22,7 @@ import toast from "react-hot-toast";
 import { Bot, Globe, Server, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ZodError } from "zod";
+import LoadingScreen from "../todos/components/loader";
 export default function DashboardPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -29,7 +30,7 @@ export default function DashboardPage() {
   const [instance, setInstance] = useState("");
   const [agentProvider, setAgentProvider] = useState("google");
   const [error, setError] = useState<string | null>(null);
-  const { setAgentData, agentData } = useAgentStore.getState();
+  const { setAgentData, agentData, clearAgentData } = useAgentStore.getState();
   const [selectedStep, setselectedStep] = useState<{
     [key: number]: string;
   }>({});
@@ -90,30 +91,29 @@ export default function DashboardPage() {
   //   }
   // }, [platform, instance, agentProvider, selectedStep]);
 
-  const handlegetAiActivity = async () => {
+  const handlegetAiActivity = useCallback(async () => {
     try {
       setLoading(true);
+      clearAgentData();
       const res = await axios.post("http://127.0.0.1:5000/run-x-agent", {
         platform,
         selectedStep: Object.values(selectedStep),
       });
-      console.log(res.data.final, "ini data respond>>>>>>>>>>>>>>");
+      console.log(res, ">>>>>>>>>>>> ini res");
+
+      // console.log(res.data.final, "ini data respond>>>>>>>>>>>>>>");
       const result = res.data.final;
       setAgentData(JSON.parse(result));
-      if (res.status == 200) {
-        toast.success("agent run successfully ");
-      }
-      if (res.status == 422) {
-        toast.error("please provided the right input");
-      }
     } catch (error) {
       if (error instanceof ZodError) {
         console.log(error.message[0]);
       }
+      toast.error("failed to run ai agent please try again");
+      console.log(error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [agentData, selectData, platform]);
   useEffect(() => {
     console.log(loading, "loadingg.....");
   }, [loading]);
@@ -155,134 +155,146 @@ export default function DashboardPage() {
 
   return (
     <div className="p-8 space-y-6">
-      {/* Platform Selection */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-2 mb-3">
-          <Globe className="w-5 h-5 text-slate-600" />
-          <Label className="text-base font-semibold text-slate-700">
-            Platform
-          </Label>
-        </div>
-        <Select onValueChange={setPlatform}>
-          <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition-colors">
-            <SelectValue placeholder="Select your platform" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Available Platforms</SelectLabel>
-              {platforms.map((p) => (
-                <SelectItem
-                  key={p.value}
-                  value={p.value}
-                  className="cursor-pointer"
-                >
-                  <span className="flex items-center gap-2">
-                    <span>{p.icon}</span>
-                    <span>{p.label}</span>
-                  </span>
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
+      {/* Form Wrapper Responsive */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Platform Selection */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <Globe className="w-5 h-5 text-slate-600" />
+            <Label className="text-base font-semibold text-slate-700">
+              Platform
+            </Label>
+          </div>
 
-      {/* Instance Selection */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-2 mb-3">
-          <Server className="w-5 h-5 text-slate-600" />
-          <Label className="text-base font-semibold text-slate-700">
-            Instance
-          </Label>
-        </div>
-        <Select onValueChange={setInstance}>
-          <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition-colors">
-            <SelectValue placeholder="Select an instance" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Available Instances</SelectLabel>
-              {instances.map((i) => (
-                <SelectItem
-                  key={i.value}
-                  value={i.value}
-                  className="cursor-pointer"
-                >
-                  {i.label}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Agent Provider Selection */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-2 mb-3">
-          <Bot className="w-5 h-5 text-slate-600" />
-          <Label className="text-base font-semibold text-slate-700">
-            Agent Provider
-          </Label>
-        </div>
-        <Select onValueChange={setAgentProvider}>
-          <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition-colors">
-            <SelectValue placeholder="Select an agent provider" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Available Agents</SelectLabel>
-              {agentsData.map((agent, index) => (
-                <SelectItem
-                  key={index}
-                  value={agent}
-                  className="cursor-pointer"
-                >
-                  {agent}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Dynamic Step Seleaction */}
-      {selectData.map((step, index) => (
-        <div key={index} className="space-y-2">
-          <Label className="text-base font-semibold text-slate-700 block mb-3">
-            {step.label}
-          </Label>
-          <Select onValueChange={(value) => handleSelect(index, value)}>
-            <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition-colors">
-              <SelectValue placeholder={selectedStep[index] || step.title} />
+          <Select onValueChange={setPlatform}>
+            <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition">
+              <SelectValue placeholder="Select your platform" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectLabel>Options</SelectLabel>
-                {step.data.map((option, idx) => {
-                  const isUsed =
-                    Object.values(selectedStep).includes(option) &&
-                    selectedStep[index] !== option;
-                  return (
-                    <SelectItem
-                      key={idx}
-                      value={option}
-                      disabled={isUsed}
-                      className="cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {option}
-                    </SelectItem>
-                  );
-                })}
+                <SelectLabel>Available Platforms</SelectLabel>
+                {platforms.map((p) => (
+                  <SelectItem
+                    key={p.value}
+                    value={p.value}
+                    className="cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2">
+                      <span>{p.icon}</span>
+                      <span>{p.label}</span>
+                    </span>
+                  </SelectItem>
+                ))}
               </SelectGroup>
             </SelectContent>
           </Select>
         </div>
-      ))}
-      <div className="flex w-full mt-7 justify-end">
-        <Button disabled={loading ? true : false} onClick={handlegetAiActivity}>
+
+        {/* Instance Selection */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <Server className="w-5 h-5 text-slate-600" />
+            <Label className="text-base font-semibold text-slate-700">
+              Instance
+            </Label>
+          </div>
+
+          <Select onValueChange={setInstance}>
+            <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition">
+              <SelectValue placeholder="Select an instance" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Available Instances</SelectLabel>
+                {instances.map((i) => (
+                  <SelectItem
+                    key={i.value}
+                    value={i.value}
+                    className="cursor-pointer"
+                  >
+                    {i.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Agent Provider */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <Bot className="w-5 h-5 text-slate-600" />
+            <Label className="text-base font-semibold text-slate-700">
+              Agent Provider
+            </Label>
+          </div>
+
+          <Select onValueChange={setAgentProvider}>
+            <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition">
+              <SelectValue placeholder="Select an agent provider" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Available Agents</SelectLabel>
+                {agentsData.map((agent, idx) => (
+                  <SelectItem
+                    key={idx}
+                    value={agent}
+                    className="cursor-pointer"
+                  >
+                    {agent}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Dynamic Step Selection */}
+        {selectData.map((step, index) => (
+          <div key={index}>
+            <Label className="text-base font-semibold text-slate-700 block mb-3">
+              {step.label}
+            </Label>
+
+            <Select onValueChange={(value) => handleSelect(index, value)}>
+              <SelectTrigger className="w-full h-12 border-slate-300 hover:border-slate-400 transition">
+                <SelectValue placeholder={selectedStep[index] || step.title} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Options</SelectLabel>
+                  {step.data.map((opt, idx) => {
+                    const isUsed =
+                      Object.values(selectedStep).includes(opt) &&
+                      selectedStep[index] !== opt;
+
+                    return (
+                      <SelectItem
+                        key={idx}
+                        value={opt}
+                        disabled={isUsed}
+                        className="cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {opt}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        ))}
+      </div>
+
+      {/* Action Button */}
+      <div className="flex w-full justify-end">
+        <Button disabled={loading} onClick={handlegetAiActivity}>
           Run the agent
         </Button>
       </div>
+
+      {loading && <LoadingScreen />}
     </div>
   );
 }
