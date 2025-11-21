@@ -4,10 +4,11 @@ import { createFullAgentSchema } from "@/modules/agent/model/agent.model";
 
 
 import { NextRequest, NextResponse } from "next/server";
-
+import z from "zod";
+type AgentData =z.infer<typeof createFullAgentSchema>;
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-
+ 
+  const body: { agentData: AgentData } = await req.json();
   console.log(body.agentData);
   
   const parsed =createFullAgentSchema.safeParse(body.agentData);

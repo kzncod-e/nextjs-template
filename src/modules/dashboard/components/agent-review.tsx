@@ -110,7 +110,9 @@ export default function AgentOverview() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <span className="text-4xl">
-                          {getPlatformIcon(agentData.platform)}
+                          {getPlatformIcon(
+                            agentData?.platform ? agentData.platform : ""
+                          )}
                         </span>
 
                         <div>
@@ -215,7 +217,11 @@ export default function AgentOverview() {
                           <div className="flex-1 bg-slate-200 rounded-full h-2 overflow-hidden">
                             <div
                               className="bg-gradient-to-r from-green-500 to-emerald-500 h-full rounded-full transition-all duration-500"
-                              style={{ width: agentData.summary.successRate }}
+                              style={{
+                                width: agentData.summary.successRate
+                                  ? agentData.summary.successRate
+                                  : "",
+                              }}
                             />
                           </div>
                         </div>

@@ -25,7 +25,7 @@ export const activity =  sqliteTable("activity",{
 export const summary = sqliteTable("summary",{
     id:integer("id").primaryKey({autoIncrement:true}),
     successRate:text("successRate"),
-    agentId:integer("agentId").notNull().references(()=>agentActivity.id),
+    agentId:integer("agentId").notNull().references(()=>agentActivity.id,{onDelete:"cascade"}),
     notes:text("notes")
 })
 
