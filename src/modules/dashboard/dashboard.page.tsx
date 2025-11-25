@@ -25,12 +25,13 @@ import { ZodError } from "zod";
 import LoadingScreen from "../todos/components/loader";
 export default function DashboardPage() {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [platform, setPlatform] = useState("instagram");
   const [instance, setInstance] = useState("");
   const [agentProvider, setAgentProvider] = useState("google");
   const [error, setError] = useState<string | null>(null);
-  const { setAgentData, agentData, clearAgentData } = useAgentStore.getState();
+  const { setAgentData, agentData, clearAgentData, loading, setLoading } =
+    useAgentStore.getState();
   const [selectedStep, setselectedStep] = useState<{
     [key: number]: string;
   }>({});
@@ -293,8 +294,6 @@ export default function DashboardPage() {
           Run the agent
         </Button>
       </div>
-
-      {loading && <LoadingScreen />}
     </div>
   );
 }

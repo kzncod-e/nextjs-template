@@ -20,11 +20,12 @@ import { useAgentStore } from "@/store/agent.store";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import LoadingScreen from "@/modules/todos/components/loader";
 
 export default function AgentOverview() {
   // hook pertama → selalu konsisten
   const router = useRouter();
-  const agentData = useAgentStore((s) => s.agentData);
+  const { agentData, loading } = useAgentStore((s) => s);
 
   // hook kedua → tetap konsisten urutannya
   const [mounted, setMounted] = React.useState(false);
@@ -68,6 +69,15 @@ export default function AgentOverview() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center">
+        <div className="w-full max-w-3xl">
+          <LoadingScreen />
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="flex justify-center">
       <div className="w-full max-w-3xl">

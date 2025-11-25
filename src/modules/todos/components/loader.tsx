@@ -4,7 +4,7 @@ const LoadingScreen = () => {
   const [activeStep, setActiveStep] = useState(0);
 
   const steps = [
-    { icon: "🔍", text: "Initializing system..." },
+    { icon: "🔍", text: "Start the action..." },
     { icon: "📡", text: "Connecting to server..." },
     { icon: "🧠", text: "Processing request..." },
     { icon: "✨", text: "Finalizing response..." },
@@ -18,37 +18,45 @@ const LoadingScreen = () => {
         }
         return prev;
       });
-    }, 1500);
+    }, 15000);
 
     return () => clearInterval(interval);
   }, []);
-
+  const Activity = () => (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+    </svg>
+  );
   return (
-    <div className=" h-full w-full flex z-40 i  justify-center fixed inset-0 bg-white/20 to-white p-8">
+    <div className=" h-full w-full flex z-40   justify-center to-white p-8">
       <div className="w-full flex-col  flex items-center justify-center max-w-md">
         {/* Main container */}
         <div className="bg-white/10 rounded-3xl w-[30rem] shadow-lg p-10 border border-gray-100">
           {/* Header */}
           <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 mb-4 shadow-md">
-              <svg
+            <div className="inline-flex p-4 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl mb-4">
+              <div
                 className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+                style={{
+                  animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+                }}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                />
-              </svg>
+                <Activity />
+              </div>
             </div>
             <h2 className="text-2xl font-semibold text-gray-800 mb-1">
-              AI System
+              AI Agent Running
             </h2>
-            <p className="text-sm text-gray-500">Preparing your experience</p>
+            <p className="text-sm text-gray-500">
+              Please wait while we process your request
+            </p>
           </div>
 
           {/* Status messages */}
