@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  fe:
+    build: .
+    container_name: fe-cloudflare-dev
+    ports:
+      - "3000:3000"  # FE dev server
+      - "8787:8787"  # Cloudflare worker dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: ["sh", "-c", "wrangler dev --local & pnpm run dev"]

@@ -92,29 +92,53 @@ export default function DashboardPage() {
   //   }
   // }, [platform, instance, agentProvider, selectedStep]);
 
-  const handlegetAiActivity = useCallback(async () => {
-    try {
-      setLoading(true);
-      clearAgentData();
-      const res = await axios.post("http://127.0.0.1:5000/run-x-agent", {
-        platform,
-        selectedStep: Object.values(selectedStep),
-      });
-      console.log(res, ">>>>>>>>>>>> ini res");
+  // const handlegetAiActivity = useCallback(async () => {
+  //   try {
+  //     setLoading(true);
+  //     clearAgentData();
+  //     const res = await axios.post("http://127.0.0.1:5000/run-x-agent", {
+  //       platform,
+  //       selectedStep: Object.values(selectedStep),
+  //     });
+  //     console.log(res, ">>>>>>>>>>>> ini res");
 
-      // console.log(res.data.final, "ini data respond>>>>>>>>>>>>>>");
-      const result = res.data.final;
-      setAgentData(JSON.parse(result));
-    } catch (error) {
-      if (error instanceof ZodError) {
-        console.log(error.message[0]);
+  //     // console.log(res.data.final, "ini data respond>>>>>>>>>>>>>>");
+  //     const result = res.data.final;
+  //     setAgentData(JSON.parse(result));
+  //   } catch (error) {
+  //     if (error instanceof ZodError) {
+  //       console.log(error.message[0]);
+  //     }
+  //     toast.error("failed to run ai agent please try again");
+  //     console.log(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, [agentData, selectData, platform]);
+
+  const handlegetAiActivity = async () => {
+    const run = await axios.post("/api/agent/activity", {
+      platform,
+      selectedStep,
+    });
+    const taskId = run.data.taskId;
+
+    let done = false;
+
+    while (done == false) {
+      const res = await axios.get(`/api/get-queue-result?taskId=${taskId}`);
+      console.log(res.data, ">>>>>>>>>>>>>>>>>>>>>>>>>");
+
+      if (res.data.status === "done") {
+        console.log("RESULT:", res.data.result);
+        setAgentData(res.data.result);
+        done = true;
+      } else {
+        await new Promise((r) => setTimeout(r, 1000)); // wait 1s
       }
-      toast.error("failed to run ai agent please try again");
-      console.log(error);
-    } finally {
-      setLoading(false);
     }
-  }, [agentData, selectData, platform]);
+  };
+
   useEffect(() => {
     console.log(loading, "loadingg.....");
   }, [loading]);
