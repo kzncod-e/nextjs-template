@@ -1,35 +1,33 @@
-import AgentOverview from "@/modules/dashboard/components/agent-review";
-import DashboardPage from "@/modules/dashboard/dashboard.page";
-import { Settings } from "lucide-react";
+"use client";
 
-export default async function Page() {
+export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white text-gray-900 p-8">
-      <div className="max-w-5xl mx-auto space-y-8">
-        {/* Debug Info - Remove in production */}
+    <div className="flex-1 p-8">
+      <h2 className="text-4xl font-bold text-cyan-400 mb-2 font-mono">
+        Welcome
+      </h2>
+      <p className="text-cyan-400/60 text-lg mb-8">
+        Explore the neon sidebar interface
+      </p>
 
-        {/* Header */}
-        <div className="flex flex-col items-center justify-between">
-          <h1 className="text-2xl  my-6 font-bold">Ai Prompt</h1>
-
-          <div className="bg-white rounded-2xl shadow-xl border border-slate-200 w-full overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
-              <div className="flex items-center gap-3">
-                <Settings className="w-8 h-8 text-white" />
-                <div>
-                  <h2 className="text-2xl font-bold text-white">
-                    Configuration
-                  </h2>
-                  <p className="text-blue-100 text-sm mt-1">
-                    Configure your automation settings
-                  </p>
-                </div>
-              </div>
-            </div>
-            <DashboardPage />
+      {/* Content Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[1, 2, 3, 4, 5, 6].map((card) => (
+          <div
+            key={card}
+            className="group p-6 bg-zinc-900 border border-cyan-500/30 rounded-lg hover:border-cyan-500/60 hover:shadow-lg transition-all duration-300"
+            style={{
+              boxShadow: "inset 0 0 30px rgba(34, 211, 238, 0.05)",
+            }}
+          >
+            <div className="w-12 h-12 bg-cyan-500/10 rounded-lg mb-4 group-hover:bg-cyan-500/20 transition-colors" />
+            <h3 className="text-cyan-400 font-semibold mb-2">Card {card}</h3>
+            <p className="text-cyan-400/70 text-sm">
+              This is a sample content card demonstrating the neon sidebar
+              layout with modern styling.
+            </p>
           </div>
-        </div>
-        <AgentOverview />
+        ))}
       </div>
     </div>
   );

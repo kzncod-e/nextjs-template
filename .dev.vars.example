@@ -1,4 +1,4 @@
-# Load .env.development* files when running `wrangler dev`
+/Users/macbook/Documents/my-project/fullstack-next-cloudflare/.dev.vars# Load .env.development* files when running `wrangler dev`
 NEXTJS_ENV=development
 
 # Drizzle Kit credentials for D1

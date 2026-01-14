@@ -1,27 +1,45 @@
-import authRoutes from "@/modules/auth/auth.route";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
-import { getSession } from "@/modules/auth/utils/auth-utils";
-import { redirect } from "next/navigation";
-import { Navigation } from "@/components/navigation";
-import { ReactNode } from "react";
-export default async function LayoutDashboard({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const session = await getSession();
+import type React from "react";
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import { ClientLayout } from "./ClientLayout";
+// import "./globals.css";
 
-  if (!session) {
-    redirect(authRoutes.login);
-  }
+const _geist = Geist({ subsets: ["latin"] });
+const _geistMono = Geist_Mono({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "v0 App",
+  description: "Created with v0",
+  generator: "v0.app",
+  icons: {
+    icon: [
+      {
+        url: "/icon-light-32x32.png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/icon-dark-32x32.png",
+        media: "(prefers-color-scheme: dark)",
+      },
+      {
+        url: "/icon.svg",
+        type: "image/svg+xml",
+      },
+    ],
+    apple: "/apple-icon.png",
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarTrigger className="fixed left-[20%]" />
-      <main className="w-full">
-        <div className="w-full mx-auto py-8 px-4">{children}</div>
-      </main>
-    </SidebarProvider>
+    <html lang="en">
+      <body className={`font-sans `}>
+        <ClientLayout>{children}</ClientLayout>
+      </body>
+    </html>
   );
 }
