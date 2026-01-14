@@ -1,93 +1,731 @@
-# next.js-template
+![Banner](banner.svg)
+
+# ⚡ Full-Stack Next.js + Cloudflare Template
+
+A production-ready template for building full-stack applications with Next.js 15 and Cloudflare's powerful edge infrastructure. Perfect for MVPs with generous free tiers and seamless scaling to enterprise-level applications.
+
+**Inspired by the [Cloudflare SaaS Stack](https://github.com/supermemoryai/cloudflare-saas-stack)** - the same stack powering [Supermemory.ai](https://git.new/memory), which serves 20k+ users on just $5/month. This template modernizes that approach with Cloudflare Workers (vs Pages), includes comprehensive D1 and R2 examples, and provides a complete development workflow.
+
+You can read detail explanations and code architecture of this template from Devin AI on [Deepwiki](https://deepwiki.com/ifindev/fullstack-next-cloudflare).
+
+Don't forget to leave a star if you find this helpful ⭐️
 
 
+## 🌟 Why Cloudflare + Next.js?
 
-## Getting started
+**Cloudflare's Edge Network** provides unparalleled performance and reliability:
+- ⚡ **Ultra-low latency** - Deploy to 300+ locations worldwide
+- 💰 **Generous free tiers** - Perfect for MVPs and side projects
+- 📈 **Effortless scaling** - From zero to millions of users automatically
+- 🔒 **Built-in security** - DDoS protection, WAF, and more
+- 🌍 **Global by default** - Your app runs close to every user
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Combined with **Next.js 15**, you get modern React features, Server Components, and Server Actions for optimal performance and developer experience.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## 🛠️ Tech Stack
 
-## Add your files
+### 🎯 **Frontend**
+- ⚛️ **Next.js 15** - App Router with React Server Components (RSC)
+- 🎨 **TailwindCSS 4** - Utility-first CSS framework
+- 📘 **TypeScript** - Full type safety throughout
+- 🧩 **Shadcn UI** - Unstyled, accessible components
+- 📋 **React Hook Form + Zod** - Type-safe form handling
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+### ☁️ **Backend & Infrastructure**
+- 🌐 **Cloudflare Workers** - Serverless edge compute platform
+- 🗃️ **Cloudflare D1** - Distributed SQLite database at the edge
+- 📦 **Cloudflare R2** - S3-compatible object storage
+- 🤖 **Cloudflare Workers AI** - Edge AI inference with OpenSource models
+- 🔑 **Better Auth** - Modern authentication with Google OAuth
+- 🛠️ **Drizzle ORM** - TypeScript-first database toolkit
+
+### 🚀 **DevOps & Deployment**
+- ⚙️ **GitHub Actions** - Automated CI/CD pipeline
+- 🔧 **Wrangler** - Cloudflare's CLI tool
+- 👁️ **Preview Deployments** - Test changes before production
+- 🔄 **Database Migrations** - Version-controlled schema changes
+- 💾 **Automated Backups** - Production database safety
+
+### 📊 **Data Flow Architecture**
+- **Fetching**: Server Actions + React Server Components for optimal performance
+- **Mutations**: Server Actions with automatic revalidation
+- **AI Processing**: Edge AI inference with Cloudflare Workers AI
+- **Type Safety**: End-to-end TypeScript from database to UI
+- **Caching**: Built-in Next.js caching with Cloudflare edge caching
+
+## 🏗️ Project Structure
+
+This template uses a **feature-based/module-sliced architecture** for better maintainability and scalability:
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.optimasi.ai/mohamadraihan660/next.js-template.git
-git branch -M main
-git push -uf origin main
+src/
+├── app/                    # Next.js App Router
+│   ├── (auth)/            # Auth-related pages
+│   ├── api/               # API routes (for external access)
+│   │   └── summarize/     # AI summarization endpoint
+│   ├── dashboard/         # Dashboard pages
+│   └── globals.css        # Global styles
+├── components/            # Shared UI components
+├── constants/             # App constants
+├── db/                    # Database configuration
+│   ├── index.ts          # DB connection
+│   └── schema.ts         # Database schemas
+├── lib/                   # Shared utilities
+├── modules/               # Feature modules
+│   ├── auth/             # Authentication module
+│   │   ├── actions/      # Auth server actions
+│   │   ├── components/   # Auth components
+│   │   ├── hooks/        # Auth hooks
+│   │   ├── models/       # Auth models
+│   │   ├── schemas/      # Auth schemas
+│   │   └── utils/        # Auth utilities
+│   ├── dashboard/        # Dashboard module
+│   └── todos/            # Todo module
+│       ├── actions/      # Todo server actions
+│       ├── components/   # Todo components
+│       ├── models/       # Todo models
+│       └── schemas/      # Todo schemas
+├── services/              # Business logic services
+│   └── summarizer.service.ts  # AI summarization service
+└── drizzle/              # Database migrations
 ```
 
-## Integrate with your tools
+**Key Architecture Benefits:**
+- **Feature Isolation** - Each module contains its own actions, components, and logic
+- **Server Actions** - Modern data mutations with automatic revalidation
+- **React Server Components** - Optimal performance with server-side rendering
+- **Type Safety** - End-to-end TypeScript from database to UI
+- **Testable** - Clear separation of concerns makes testing easier
 
-- [ ] [Set up project integrations](https://gitlab.optimasi.ai/mohamadraihan660/next.js-template/-/settings/integrations)
+## 🚀 Getting Started
 
-## Collaborate with your team
+### 1. Prerequisites
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+- **Cloudflare Account** - [Sign up for free](https://dash.cloudflare.com/sign-up)
+- **Node.js 20+** and **pnpm** installed
+- **Google OAuth App** - For authentication setup
 
-## Test and Deploy
+### 2. Create Cloudflare API Token
 
-Use the built-in continuous integration in GitLab.
+Create an API token for Wrangler authentication:
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+1. In the Cloudflare dashboard, go to the **Account API tokens** page
+2. Select **Create Token** > find **Edit Cloudflare Workers** > select **Use Template**
+3. Customize your token name (e.g., "Next.js Cloudflare Template")
+4. Scope your token to your account and zones (if using custom domains)
+5. **Add additional permissions** for D1 database and AI access:
+   - Account - D1:Edit
+   - Account - D1:Read
+   - Account - Cloudflare Workers AI:Read
 
-***
+**Final Token Permissions:**
+- All permissions from "Edit Cloudflare Workers" template
+- Account - D1:Edit (for database operations)
+- Account - D1:Read (for database queries)
+- Account - Cloudflare Workers AI:Read (for AI inference)
 
-# Editing this README
+### 3. Clone and Setup
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+```bash
+# Clone the repository
+git clone https://github.com/ifindev/fullstack-next-cloudflare.git
+cd fullstack-next-cloudflare
 
-## Suggestions for a good README
+# Install dependencies
+pnpm install
+```
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+### 4. Environment Configuration
 
-## Name
-Choose a self-explaining name for your project.
+Create your environment file:
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+```bash
+# Copy example environment file
+cp .dev.vars.example .dev.vars
+```
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+Edit `.dev.vars` with your credentials:
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+```bash
+# Cloudflare Configuration
+CLOUDFLARE_ACCOUNT_ID=your-account-id
+CLOUDFLARE_D1_TOKEN=your-api-token
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+# Authentication Secrets
+BETTER_AUTH_SECRET=your-random-secret-here
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+# Storage
+CLOUDFLARE_R2_URL=your-r2-bucket-url
+```
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+### 5. Authentication Setup
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+**Better Auth Secret:**
+```bash
+# Generate a random secret
+openssl rand -base64 32
+# Add to BETTER_AUTH_SECRET in .dev.vars
+```
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+**Google OAuth Setup:**
+Follow the [Better Auth Google documentation](https://www.better-auth.com/docs/authentication/google) to:
+1. Create a Google OAuth 2.0 application
+2. Get your Client ID and Client Secret
+3. Add authorized redirect URIs
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+### 6. Storage Setup & R2 URL Configuration
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+**Understanding R2 URLs:**
+Cloudflare R2 has different URL behaviors for development vs production:
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+- **Development**: R2 provides a public URL that works immediately
+- **Production**: R2 public URLs are not meant for production use - you should set up a custom domain
 
-## License
-For open source projects, say how it is licensed.
+**Step 1: Create R2 Bucket**
+```bash
+# Create R2 bucket for development
+wrangler r2 bucket create your-app-bucket-dev
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+# For production, create a separate bucket
+wrangler r2 bucket create your-app-bucket-prod
+```
+   
+**Step 2: Get R2 URL for Development**
+
+**Enable Public Development URL:**
+1. Go to Cloudflare Dashboard
+2. Click "R2 Object Storage" in the sidebar
+3. Select your bucket from the list
+4. Go to the "Settings" tab
+5. Find "Public Development URL" section
+6. Click "Enable Public URL"
+7. Copy the displayed URL (it will be in format: `https://pub-xxxxx.r2.dev`)
+
+**Example URL Format:**
+```
+https://pub-a1b2c3d4e5f6g7h8i9j0.r2.dev
+```
+
+**Important Notes:**
+- The URL is automatically generated by Cloudflare
+- No account ID needed - it's all in the provided URL
+- This URL is for development only (not production)
+
+**Step 3: Add R2 URL to Environment Variables**
+```bash
+# Add to your .dev.vars file (use the URL you copied from dashboard)
+CLOUDFLARE_R2_URL=https://pub-a1b2c3d4e5f6g7h8i9j0.r2.dev
+```
+
+**Note:** Replace the example URL with the actual URL you copied from your R2 bucket settings.
+
+**For Production - Custom Domain Setup (Required):**
+
+⚠️ **Important**: The default R2 public URL should NOT be used in production as it's not optimized for performance and may have limitations.
+
+**Setup Custom Domain for R2:**
+```bash
+# 1. Go to Cloudflare Dashboard → R2 Storage → Your Bucket → Custom Domains
+# 2. Click "Connect Domain" and enter your desired domain (e.g., files.yourdomain.com)
+# 3. Update your DNS records as instructed by Cloudflare
+# 4. Wait for SSL certificate to be issued (usually a few minutes)
+
+# Your production R2 URL will be:
+# https://files.yourdomain.com
+
+# Add this to your production secrets:
+echo "https://files.yourdomain.com" | wrangler secret put CLOUDFLARE_R2_URL
+```
+
+**R2 URL Summary:**
+- **Development**: Use URL from R2 bucket "Public Development URL" setting
+- **Production**: Must use custom domain for better performance and reliability
+
+**How R2 URLs Work:**
+- **Base URL**: Get from R2 bucket settings (format: `https://pub-xxxxx.r2.dev`)
+- **File URLs**: `https://pub-xxxxx.r2.dev/{folder}/{file-name}.{extension}`
+- **Environment Variable**: Only the base URL goes into `CLOUDFLARE_R2_URL`
+- **Code**: The full file paths are constructed programmatically using the base URL
+
+## 🛠️ Manual Setup (Detailed)
+
+If you prefer to set everything up manually or want to understand each step in detail, follow this comprehensive guide.
+
+### Step 1: Create Cloudflare Resources
+
+**Create D1 Database:**
+```bash
+# Create a new SQLite database at the edge
+wrangler d1 create your-app-name
+
+# Output will show:
+# database_name = "your-app-name"
+# database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+```
+
+**Create R2 Bucket:**
+```bash
+# Create object storage bucket
+wrangler r2 bucket create your-app-bucket
+
+# List buckets to confirm
+wrangler r2 bucket list
+```
+
+### Step 2: Configure Wrangler
+
+Update `wrangler.jsonc` with your resource IDs:
+
+```jsonc
+{
+    "name": "your-app-name",
+    "d1_databases": [
+        {
+            "binding": "DB",
+            "database_name": "your-app-name",
+            "database_id": "your-database-id-from-step-1",
+            "migrations_dir": "./src/drizzle"
+        }
+    ],
+    "r2_buckets": [
+        {
+            "bucket_name": "your-app-bucket",
+            "binding": "FILES"
+        }
+    ],
+    "ai": {
+        "binding": "AI"
+    }
+}
+```
+
+### Step 3: Set Up Authentication
+
+**Generate Better Auth Secret:**
+```bash
+# On macOS/Linux
+openssl rand -base64 32
+
+# On Windows (PowerShell)
+[System.Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32))
+
+# Or use online generator: https://generate-secret.vercel.app/32
+```
+
+**Configure Google OAuth:**
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing one
+3. Enable Google+ API
+4. Create OAuth 2.0 credentials
+5. Add authorized redirect URIs:
+   - `http://localhost:3000/api/auth/callback/google` (development)
+   - `https://your-app.your-subdomain.workers.dev/api/auth/callback/google` (production)
+
+### Step 4: Environment Configuration
+
+**Create Local Environment File:**
+```bash
+# .dev.vars for local development
+CLOUDFLARE_ACCOUNT_ID=your-account-id
+CLOUDFLARE_D1_TOKEN=your-api-token
+BETTER_AUTH_SECRET=your-generated-secret
+GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+# Get this from R2 bucket settings: R2 Object Storage → Your Bucket → Settings → Public Development URL
+CLOUDFLARE_R2_URL=https://pub-a1b2c3d4e5f6g7h8i9j0.r2.dev
+```
+
+  **Set Production Secrets:**
+  ```bash
+  # Add each secret to Cloudflare Workers
+  echo "your-secret-here" | wrangler secret put BETTER_AUTH_SECRET
+  echo "your-client-id" | wrangler secret put GOOGLE_CLIENT_ID
+  echo "your-client-secret" | wrangler secret put GOOGLE_CLIENT_SECRET
+  echo "your-r2-url" | wrangler secret put CLOUDFLARE_R2_URL
+  ```
+
+### Step 5: Database Setup
+
+**Generate TypeScript Types:**
+```bash
+# Generate Cloudflare bindings for TypeScript
+pnpm run cf-typegen
+```
+
+**Initialize Database:**
+```bash
+# Generate initial migration from schema
+pnpm run db:generate
+
+# Apply migrations to local database
+pnpm run db:migrate:local
+
+# Verify database structure         p p
+pnpm run db:inspect:local
+```
+
+**Optional: Seed Sample Data**
+```bash
+# Create and run a seed script
+wrangler d1 execute your-app-name --local --command="
+INSERT INTO todos (id, title, description, completed, created_at, updated_at) VALUES
+('1', 'Welcome to your app', 'This is a sample todo item', false, datetime('now'), datetime('now')),
+('2', 'Set up authentication', 'Configure Google OAuth', true, datetime('now'), datetime('now'));
+"
+```
+
+### Step 6: Test Your Setup
+
+**Start Development Servers:**
+```bash
+# Terminal 1: Start Wrangler (provides D1 access)
+pnpm run wrangler:dev
+
+# Terminal 2: Start Next.js (provides HMR)
+pnpm run dev
+
+# Alternative: Single command (no HMR)
+pnpm run dev:cf
+```
+
+**Verify Everything Works:**
+1. Open `http://localhost:3000`
+2. Test authentication flow
+3. Create a todo item
+4. Check database: `pnpm run db:studio:local`
+
+### Step 7: Set Up GitHub Actions (Optional)
+
+**Add Repository Secrets:**
+Go to your GitHub repository → Settings → Secrets and add:
+
+- `CLOUDFLARE_API_TOKEN` - Your API token from Step 2
+- `CLOUDFLARE_ACCOUNT_ID` - Your account ID
+- `BETTER_AUTH_SECRET` - Your auth secret
+- `GOOGLE_CLIENT_ID` - Your Google client ID
+- `GOOGLE_CLIENT_SECRET` - Your Google client secret
+- `CLOUDFLARE_R2_URL` - Your R2 bucket URL
+
+**Deploy Production Database:**
+```bash
+# Apply migrations to production
+pnpm run db:migrate:prod
+
+# Verify production database
+pnpm run db:inspect:prod
+```
+
+## 🔧 Advanced Manual Configuration
+
+
+
+### Custom Domain Setup
+
+**Add Custom Domain:**
+1. Go to Cloudflare dashboard → Workers & Pages
+2. Select your worker → Settings → Triggers
+3. Click "Add Custom Domain"
+4. Enter your domain (must be in your Cloudflare account)
+
+**Update OAuth Redirect URLs:**
+Add your custom domain to Google OAuth settings:
+- `https://yourdomain.com/api/auth/callback/google`
+
+### Database Optimization
+
+**Add Indexes for Performance:**
+```sql
+-- Create indexes for better query performance
+CREATE INDEX IF NOT EXISTS idx_todos_user_id ON todos(user_id);
+CREATE INDEX IF NOT EXISTS idx_todos_created_at ON todos(created_at);
+CREATE INDEX IF NOT EXISTS idx_todos_completed ON todos(completed);
+```
+
+**Monitor Database Performance:**
+```bash
+# View database insights
+wrangler d1 insights your-app-name --since 1h
+
+# Export data for analysis
+wrangler d1 export your-app-name --output backup.sql
+```
+
+### R2 Storage Configuration
+
+**Configure CORS for Direct Uploads:**
+```bash
+# Create CORS policy file
+echo '[
+  {
+    "AllowedOrigins": ["https://yourdomain.com", "http://localhost:3000"],
+    "AllowedMethods": ["GET", "PUT", "POST", "DELETE"],
+    "AllowedHeaders": ["*"],
+    "ExposeHeaders": [],
+    "MaxAgeSeconds": 3000
+  }
+]' > cors.json
+
+# Apply CORS policy
+wrangler r2 bucket cors put your-app-bucket --file cors.json
+```
+
+## 🏃‍♂️ Development Workflow
+
+### Initial Setup
+```bash
+# 1. Generate Cloudflare types (run after any wrangler.jsonc changes)
+pnpm run cf-typegen
+
+# 2. Apply database migrations
+pnpm run db:migrate:local
+
+# 3. Build the application for Cloudflare
+pnpm run build:cf
+```
+
+### Daily Development
+```bash
+# Terminal 1: Start Wrangler for D1 database access
+pnpm run wrangler:dev
+
+# Terminal 2: Start Next.js development server with HMR
+pnpm run dev
+```
+
+**Development URLs:**
+- 🌐 **Next.js with HMR**: `http://localhost:3000` (recommended)
+- ⚙️ **Wrangler Dev Server**: `http://localhost:8787`
+
+### Alternative Development Options
+```bash
+# Single command - Cloudflare runtime (no HMR)
+pnpm run dev:cf
+
+# Test with remote Cloudflare resources
+pnpm run dev:remote
+```
+
+## 📜 Available Scripts
+
+### **Core Development**
+| Script | Description |
+|--------|-------------|
+| `pnpm dev` | Start Next.js with HMR |
+| `pnpm run build:cf` | Build for Cloudflare Workers |
+| `pnpm run wrangler:dev` | Start Wrangler for local D1 access |
+| `pnpm run dev:cf` | Combined build + Cloudflare dev server |
+
+### **Database Operations**
+| Script | Description |
+|--------|-------------|
+| `pnpm run db:generate` | Generate new migration |
+| `pnpm run db:generate:named "migration_name"` | Generate named migration |
+| `pnpm run db:migrate:local` | Apply migrations to local D1 |
+| `pnpm run db:migrate:preview` | Apply migrations to preview |
+| `pnpm run db:migrate:prod` | Apply migrations to production |
+| `pnpm run db:studio:local` | Open Drizzle Studio for local DB |
+| `pnpm run db:inspect:local` | List local database tables |
+| `pnpm run db:reset:local` | Reset local database |
+
+### **Deployment & Production**
+| Script | Description |
+|--------|-------------|
+| `pnpm run deploy` | Deploy to production |
+| `pnpm run deploy:preview` | Deploy to preview environment |
+| `pnpm run cf-typegen` | Generate Cloudflare TypeScript types |
+| `pnpm run cf:secret` | Add secrets to Cloudflare Workers |
+
+### **Development Order**
+
+**First-time setup:**
+1. `pnpm run cf-typegen` - Generate types
+2. `pnpm run db:migrate:local` - Setup database
+3. `pnpm run build:cf` - Build application
+
+**Daily development:**
+1. `pnpm run wrangler:dev` - Start D1 access (Terminal 1)
+2. `pnpm run dev` - Start Next.js with HMR (Terminal 2)
+
+**After schema changes:**
+1. `pnpm run db:generate` - Generate migration
+2. `pnpm run db:migrate:local` - Apply to local DB
+
+**After wrangler.jsonc changes:**
+1. `pnpm run cf-typegen` - Regenerate types
+
+## 🤖 AI Development & Testing
+
+### Testing the AI API
+
+**⚠️ Authentication Required**: Login to your app first, then test the API.
+
+**Browser Console (Easiest):**
+1. Login at `http://localhost:3000`
+2. Open DevTools Console (F12)
+3. Run:
+```javascript
+fetch('/api/summarize', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  credentials: 'include',
+  body: JSON.stringify({
+    text: "Your text to summarize here...",
+    config: { maxLength: 100, style: "concise" }
+  })
+}).then(r => r.json()).then(console.log);
+```
+
+**cURL (with session cookies):**
+1. Login in browser first
+2. DevTools → Application → Cookies → Copy `better-auth.session_token`
+3. Use cookie in cURL:
+```bash
+curl -X POST http://localhost:3000/api/summarize \
+  -H "Content-Type: application/json" \
+  -H "Cookie: better-auth.session_token=your-token-here" \
+  -d '{"text": "Your text here...", "config": {"maxLength": 100}}'
+```
+
+**Postman:**
+1. Login in browser, copy session cookie from DevTools
+2. Add header: `Cookie: better-auth.session_token=your-token-here`
+
+**Unauthenticated Request Response:**
+```json
+{
+  "success": false,
+  "error": "Authentication required",
+  "data": null
+}
+```
+
+
+### AI Service Architecture
+
+The AI integration follows a clean service-based architecture:
+
+1. **API Route** (`/api/summarize`) - Handles HTTP requests, authentication, and validation
+2. **Authentication Layer** - Validates user session before processing requests
+3. **SummarizerService** - Encapsulates AI business logic
+4. **Error Handling** - Comprehensive error responses with proper status codes
+5. **Type Safety** - Full TypeScript support with Zod validation
+
+### AI Model Options
+
+Cloudflare Workers AI supports various models:
+- **@cf/meta/llama-3.2-1b-instruct** - Text generation (current)
+- **@cf/meta/llama-3.2-3b-instruct** - More capable text generation
+- **@cf/meta/m2m100-1.2b** - Translation
+- **@cf/baai/bge-base-en-v1.5** - Text embeddings
+- **@cf/microsoft/resnet-50** - Image classification
+
+## 🔧 Advanced Configuration
+
+### Database Schema Changes
+```bash
+# 1. Modify schema files in src/db/schemas/
+# 2. Generate migration
+pnpm run db:generate:named "add_user_table"
+# 3. Apply to local database
+pnpm run db:migrate:local
+# 4. Test your changes
+# 5. Commit and deploy (migrations run automatically)
+```
+
+### Adding New Cloudflare Resources
+```bash
+# 1. Update wrangler.jsonc with new resources
+# 2. Regenerate types
+pnpm run cf-typegen
+# 3. Update your code to use new bindings
+```
+
+### Production Secrets Management
+```bash
+# Add secrets to production environment
+pnpm run cf:secret BETTER_AUTH_SECRET
+pnpm run cf:secret GOOGLE_CLIENT_ID
+pnpm run cf:secret GOOGLE_CLIENT_SECRET
+```
+
+## 📊 Performance & Monitoring
+
+**Built-in Observability:**
+- ✅ Cloudflare Analytics (enabled by default)
+- ✅ Real User Monitoring (RUM)
+- ✅ Error tracking and logging
+- ✅ Performance metrics
+
+**Database Monitoring:**
+```bash
+# Monitor database performance
+wrangler d1 insights next-cf-app
+
+# View database metrics in Cloudflare Dashboard
+# Navigate to Workers & Pages → D1 → next-cf-app → Metrics
+```
+
+## 🚀 Deployment
+
+### Automatic Deployment (Recommended)
+
+Push to `main` branch triggers automatic deployment via GitHub Actions:
+
+```bash
+git add .
+git commit -m "feat: add new feature"
+git push origin main
+```
+
+**Deployment Pipeline:**
+1. ✅ Install dependencies
+2. ✅ Build application
+3. ✅ Run database migrations
+4. ✅ Deploy to Cloudflare Workers
+
+### Manual Deployment
+
+```bash
+# Deploy to production
+pnpm run deploy
+
+# Deploy to preview environment
+pnpm run deploy:preview
+```
+
+## ✍️ Todos
+
+### 🤖 AI Features
+- [ ] Add text translation service with `@cf/meta/m2m100-1.2b`
+- [ ] Implement text embeddings for semantic search with `@cf/baai/bge-base-en-v1.5`
+- [ ] Add image classification API with `@cf/microsoft/resnet-50`
+- [ ] Create chat/conversation API with conversation memory
+- [ ] Add content moderation with AI classification
+- [ ] Implement sentiment analysis for user feedback
+
+### 💳 Payments & Communication
+- [ ] Implement email sending with [Resend](https://resend.com/) & [Cloudflare Email Routing](https://www.cloudflare.com/developer-platform/products/email-routing/)
+- [ ] Implement international payment gateway with [Polar.sh](https://polar.sh/)
+- [ ] Implement Indonesian payment gateway either with [Xendit](https://www.xendit.co/en-id/), [Midtrans](https://midtrans.com/en), or [Duitku](https://www.duitku.com/)
+
+### 📊 Analytics & Performance
+- [ ] Add Cloudflare Analytics integration
+- [ ] Implement custom metrics tracking
+- [ ] Add performance monitoring dashboard
+- [ ] Create AI usage analytics and cost tracking
+
+
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit issues and pull requests.
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+© 2025 Muhammad Arifin. All rights reserved.
